@@ -9,11 +9,15 @@
 
 use std::fmt;
 
+mod placeholder_format;
+mod plain_text;
 mod plural_classifiers;
 mod plural_format;
 mod select_format;
 mod simple_format;
 
+pub use self::placeholder_format::PlaceholderFormat;
+pub use self::plain_text::PlainText;
 pub use self::plural_classifiers::*;
 pub use self::plural_format::{PluralCategory, PluralFormat};
 pub use self::select_format::SelectFormat;
@@ -24,18 +28,5 @@ use super::Args;
 /// The part of a message which formats a value.
 pub trait Format {
     /// Format this message part.
-    fn format_message_part(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result;
-}
-
-/// Either some plain text (string)
-/// or something to be formatted.
-pub enum MessagePart {
-    /// A message part which is a piece of plain text
-    /// that needs no formatting.
-    String(String),
-    /// Magic value used internally by some formats. Currently
-    /// only used for `PluralFormat`.
-    Placeholder,
-    /// A message part which needs to be formatted.
-    Format(Box<Format>),
+    fn apply_format(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result;
 }

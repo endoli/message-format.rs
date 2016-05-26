@@ -7,7 +7,7 @@
 use std::collections::HashMap;
 use std::fmt;
 
-use super::{Format, MessagePart};
+use super::Format;
 use super::english_cardinal_classifier;
 use {Args, Message};
 
@@ -121,31 +121,28 @@ impl PluralFormat {
         }
     }
 
-    /// Handle specialized behavior for `MessagePart::Placeholder` when formatting
+    /// Handle specialized behavior for `PlaceholderFormat` when formatting
     /// a `PluralFormat`.
+    ///
+    /// XXX: Can we fold this away and do something more general for
+    /// `PlaceholderFormat`?
     fn format_plural_message(&self,
                              stream: &mut fmt::Write,
                              message: &Message,
-                             offset_value: i64,
+                             _offset_value: i64,
                              args: &Args)
                              -> fmt::Result {
-        for part in &message.message_parts {
-            match *part {
-                MessagePart::String(ref string) => {
-                    try!(write!(stream, "{}", string));
-                }
-                MessagePart::Placeholder => {
-                    try!(write!(stream, "{}", offset_value));
-                }
-                MessagePart::Format(ref format) => try!(format.format_message_part(stream, args)),
-            }
+        for part in &message.parts {
+            // XXX: Need to deal with PlaceholderFormat here and give it
+            // the `offset_value`.
+            try!(part.apply_format(stream, args));
         }
         Ok(())
     }
 }
 
 impl Format for PluralFormat {
-    fn format_message_part(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
+    fn apply_format(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
         let value = 0;
         let offset_value = value - self.offset;
         let message = if !self.literals.is_empty() {

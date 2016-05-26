@@ -19,31 +19,25 @@ use std::fmt;
 pub mod ast;
 mod parse_message;
 
-use ast::{Format, MessagePart};
+use ast::Format;
 pub use self::parse_message::parse_message;
 
 /// A message that has been localized and can be formatted in a
 /// locale-aware manner.
 pub struct Message {
-    message_parts: Vec<MessagePart>,
+    parts: Vec<Box<Format>>,
 }
 
 impl Message {
     /// Construct a message from constituent parts.
-    pub fn new(parts: Vec<MessagePart>) -> Self {
-        Message { message_parts: parts }
+    pub fn new(parts: Vec<Box<Format>>) -> Self {
+        Message { parts: parts }
     }
 
     /// Format a message to a stream.
     pub fn format_message(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
-        for part in &self.message_parts {
-            match *part {
-                MessagePart::String(ref string) => {
-                    try!(stream.write_str(string));
-                }
-                MessagePart::Placeholder => unreachable!(),
-                MessagePart::Format(ref format) => try!(format.format_message_part(stream, args)),
-            }
+        for part in &self.parts {
+            try!(part.apply_format(stream, args));
         }
         Ok(())
     }

@@ -23,7 +23,7 @@ impl SimpleFormat {
 }
 
 impl Format for SimpleFormat {
-    fn format_message_part(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
+    fn apply_format(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
         if let Some(value) = args.get(self.variable_name.as_str()) {
             try!(write!(stream, "{}", value));
             Ok(())
@@ -44,7 +44,7 @@ mod tests {
     fn it_works() {
         let fmt = SimpleFormat::new("name");
         let mut output = String::new();
-        fmt.format_message_part(&mut output, &Args::new()).unwrap();
+        fmt.apply_format(&mut output, &Args::new()).unwrap();
         assert_eq!("", output);
     }
 }
