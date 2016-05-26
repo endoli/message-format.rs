@@ -1,0 +1,12 @@
+[package]
+name = "message-format"
+version = "0.0.1"
+authors = ["Bruce Mitchener <bruce.mitchener@gmail.com>"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+description = ""
+keywords = ["format", "message", "i18n", "icu", "localization", "l10n", "internationalization", "MessageFormat"]
+homepage = "https://github.com/endoli/message-format.rs"
+repository = "https://github.com/endoli/message-format.rs"
+
+[dependencies]
