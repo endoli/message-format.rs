@@ -109,15 +109,19 @@ impl PluralFormat {
     }
 
     /// Given a value adjusted by the `offset`, determine which `Message` to use.
-    fn format_from_classifier(&self, offset_value: i64) -> &Message {
-        let category = (self.classifier)(offset_value);
-        match category {
-            PluralCategory::Zero => self.zero.as_ref().unwrap_or(&self.other),
-            PluralCategory::One => self.one.as_ref().unwrap_or(&self.other),
-            PluralCategory::Two => self.two.as_ref().unwrap_or(&self.other),
-            PluralCategory::Few => self.few.as_ref().unwrap_or(&self.other),
-            PluralCategory::Many => self.many.as_ref().unwrap_or(&self.other),
-            PluralCategory::Other => &self.other,
+    fn lookup_message(&self, offset_value: i64) -> &Message {
+        if let Some(literal) = self.literals.get(&offset_value) {
+            literal
+        } else {
+            let category = (self.classifier)(offset_value);
+            match category {
+                PluralCategory::Zero => self.zero.as_ref().unwrap_or(&self.other),
+                PluralCategory::One => self.one.as_ref().unwrap_or(&self.other),
+                PluralCategory::Two => self.two.as_ref().unwrap_or(&self.other),
+                PluralCategory::Few => self.few.as_ref().unwrap_or(&self.other),
+                PluralCategory::Many => self.many.as_ref().unwrap_or(&self.other),
+                PluralCategory::Other => &self.other,
+            }
         }
     }
 
@@ -145,15 +149,7 @@ impl Format for PluralFormat {
     fn apply_format(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
         let value = 0;
         let offset_value = value - self.offset;
-        let message = if !self.literals.is_empty() {
-            if let Some(literal) = self.literals.get(&offset_value) {
-                literal
-            } else {
-                self.format_from_classifier(offset_value)
-            }
-        } else {
-            self.format_from_classifier(offset_value)
-        };
+        let message = self.lookup_message(offset_value);
         try!(self.format_plural_message(stream, message, offset_value, args));
         Ok(())
     }
