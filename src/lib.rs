@@ -48,7 +48,7 @@ struct Arg<'arg> {
     value: &'arg fmt::Display,
 }
 
-///
+#[allow(missing_docs)]
 pub struct Args<'arg> {
     args: Vec<Arg<'arg>>,
 }
@@ -59,12 +59,12 @@ impl<'arg> Args<'arg> {
         Args { args: vec![] }
     }
 
-    ///
+    #[allow(missing_docs)]
     pub fn get(&self, name: &str) -> Option<&fmt::Display> {
         self.args.iter().find(|ref a| a.name == name).map(|a| a.value)
     }
 
-    ///
+    #[allow(missing_docs)]
     pub fn arg(mut self, name: &'arg str, value: &'arg fmt::Display) -> Self {
         self.args.push(Arg {
             name: name,
