@@ -10,3 +10,4 @@ homepage = "https://github.com/endoli/message-format.rs"
 repository = "https://github.com/endoli/message-format.rs"
 
 [dependencies]
+nom = "1.2.3"
