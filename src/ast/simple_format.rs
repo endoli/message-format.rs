@@ -38,13 +38,13 @@ impl Format for SimpleFormat {
 mod tests {
     use super::*;
     use ast::Format;
-    use Args;
+    use arg;
 
     #[test]
     fn it_works() {
         let fmt = SimpleFormat::new("name");
         let mut output = String::new();
-        fmt.apply_format(&mut output, &Args::new()).unwrap();
+        fmt.apply_format(&mut output, &arg("name", &"John")).unwrap();
         assert_eq!("", output);
     }
 }

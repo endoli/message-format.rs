@@ -34,13 +34,13 @@ impl Format for PlainText {
 mod tests {
     use super::*;
     use ast::Format;
-    use Args;
+    use arg;
 
     #[test]
     fn it_works() {
         let fmt = PlainText::new("Test text.");
         let mut output = String::new();
-        fmt.apply_format(&mut output, &Args::new()).unwrap();
+        fmt.apply_format(&mut output, &arg("John", &"George")).unwrap();
         assert_eq!("Test text.", output);
     }
 }

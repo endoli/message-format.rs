@@ -52,34 +52,50 @@ impl Message {
     }
 }
 
-struct Arg<'arg> {
-    name: &'arg str,
-    value: &'arg fmt::Display,
+#[allow(dead_code,missing_docs)]
+pub struct FormatArg<'a, T: 'a + fmt::Display> {
+    name: &'a str,
+    value: &'a T,
+    prev: Option<&'a Args<'a>>,
 }
 
 #[allow(missing_docs)]
-pub struct Args<'arg> {
-    args: Vec<Arg<'arg>>,
+pub fn arg<'a, T: 'a + fmt::Display>(name: &'a str, value: &'a T) -> FormatArg<'a, T> {
+    FormatArg {
+        name: name,
+        value: value,
+        prev: None,
+    }
 }
 
-impl<'arg> Args<'arg> {
-    /// Construct new `Args`
-    pub fn new() -> Self {
-        Args { args: vec![] }
-    }
-
-    #[allow(missing_docs)]
-    pub fn get(&self, name: &str) -> Option<&fmt::Display> {
-        self.args.iter().find(|ref a| a.name == name).map(|a| a.value)
-    }
-
-    #[allow(missing_docs)]
-    pub fn arg(mut self, name: &'arg str, value: &'arg fmt::Display) -> Self {
-        self.args.push(Arg {
+#[allow(missing_docs)]
+pub trait Args<'a> {
+    fn arg<T: fmt::Display>(&'a self, name: &'a str, value: &'a T) -> FormatArg<'a, T>
+        where Self: Sized
+    {
+        FormatArg {
             name: name,
             value: value,
-        });
-        self
+            prev: Some(self),
+        }
+    }
+
+    fn get(&self, name: &str) -> Option<&fmt::Display>;
+
+    fn next(&self) -> Option<&'a Args<'a>>;
+}
+
+impl<'a, T> Args<'a> for FormatArg<'a, T>
+    where T: std::fmt::Display
+{
+    fn next(&self) -> Option<&'a Args<'a>> {
+        self.prev
+    }
+
+    #[allow(missing_docs)]
+    fn get(&self, _name: &str) -> Option<&fmt::Display> {
+        None
+        // self.args.iter().find(|ref a| a.name == name).map(|a| a.value)
     }
 }
 
