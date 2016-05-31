@@ -56,14 +56,14 @@ impl Message {
 }
 
 #[allow(dead_code,missing_docs)]
-pub struct Arg<'a, T: 'a + fmt::Display> {
+pub struct Arg<'a, T: 'a + fmt::Display + ?Sized> {
     name: &'a str,
     value: &'a T,
     prev: Option<&'a Args<'a>>,
 }
 
 #[allow(missing_docs)]
-pub fn arg<'a, T: 'a + fmt::Display>(name: &'a str, value: &'a T) -> Arg<'a, T> {
+pub fn arg<'a, T: 'a + fmt::Display + ?Sized>(name: &'a str, value: &'a T) -> Arg<'a, T> {
     Arg {
         name: name,
         value: value,
@@ -73,7 +73,7 @@ pub fn arg<'a, T: 'a + fmt::Display>(name: &'a str, value: &'a T) -> Arg<'a, T> 
 
 #[allow(missing_docs)]
 pub trait Args<'a> {
-    fn arg<T: fmt::Display>(&'a self, name: &'a str, value: &'a T) -> Arg<'a, T>
+    fn arg<T: 'a + fmt::Display + ?Sized>(&'a self, name: &'a str, value: &'a T) -> Arg<'a, T>
         where Self: Sized
     {
         Arg {
