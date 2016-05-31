@@ -89,8 +89,6 @@ pub trait Args<'a> {
     fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result;
 
     fn get(&'a self, name: &str) -> Option<&'a Args<'a>>;
-
-    fn next(&self) -> Option<&'a Args<'a>>;
 }
 
 impl<'a, T> Args<'a> for Arg<'a, T>
@@ -108,10 +106,6 @@ impl<'a, T> Args<'a> for Arg<'a, T>
         } else {
             None
         }
-    }
-
-    fn next(&self) -> Option<&'a Args<'a>> {
-        self.prev
     }
 }
 
