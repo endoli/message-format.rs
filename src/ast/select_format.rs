@@ -44,7 +44,7 @@ impl<K> SelectFormat<K>
 }
 
 impl<K> Format for SelectFormat<K> {
-    fn apply_format(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
+    fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
         try!(self.default.format_message(stream, args));
         Ok(())
     }

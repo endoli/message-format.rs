@@ -28,5 +28,5 @@ use super::Args;
 /// The part of a message which formats a value.
 pub trait Format {
     /// Format this message part.
-    fn apply_format(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result;
+    fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result;
 }

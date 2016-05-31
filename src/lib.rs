@@ -47,7 +47,10 @@ impl Message {
     }
 
     /// Format a message to a stream.
-    pub fn format_message(&self, stream: &mut fmt::Write, args: &Args) -> fmt::Result {
+    pub fn format_message<'f>(&'f self,
+                              stream: &mut fmt::Write,
+                              args: &'f Args<'f>)
+                              -> fmt::Result {
         for part in &self.parts {
             try!(part.apply_format(stream, args));
         }
@@ -85,7 +88,7 @@ pub trait Args<'a> {
 
     fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result;
 
-    fn get(&self, name: &str) -> Option<&fmt::Display>;
+    fn get(&'a self, name: &str) -> Option<&'a Args<'a>>;
 
     fn next(&self) -> Option<&'a Args<'a>>;
 }
@@ -97,9 +100,9 @@ impl<'a, T> Args<'a> for Arg<'a, T>
         self.value.fmt(f)
     }
 
-    fn get(&self, name: &str) -> Option<&fmt::Display> {
+    fn get(&'a self, name: &str) -> Option<&'a Args<'a>> {
         if self.name == name {
-            Some(self.value)
+            Some(self)
         } else if let Some(prev) = self.prev {
             prev.get(name)
         } else {
@@ -112,7 +115,7 @@ impl<'a, T> Args<'a> for Arg<'a, T>
     }
 }
 
-impl<'a> fmt::Display for Args<'a> {
+impl<'a, 'b> fmt::Display for Args<'a> + 'b {
     /// Forward `fmt::Display` to the underlying value.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.fmt_value(f)
