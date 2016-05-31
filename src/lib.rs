@@ -58,7 +58,7 @@ impl Message {
     }
 }
 
-#[allow(dead_code,missing_docs)]
+#[allow(missing_docs)]
 pub struct Arg<'a, T: 'a + fmt::Display + ?Sized> {
     name: &'a str,
     value: &'a T,
