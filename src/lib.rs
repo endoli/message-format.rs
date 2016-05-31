@@ -29,9 +29,11 @@ extern crate nom;
 use std::fmt;
 
 pub mod ast;
+mod args;
 mod parse_message;
 
 use ast::Format;
+pub use self::args::{arg, Args};
 pub use self::parse_message::parse_message;
 
 /// A message that has been localized and can be formatted in a
@@ -55,64 +57,6 @@ impl Message {
             try!(part.apply_format(stream, args));
         }
         Ok(())
-    }
-}
-
-#[allow(missing_docs)]
-pub struct Arg<'a, T: 'a + fmt::Display + ?Sized> {
-    name: &'a str,
-    value: &'a T,
-    prev: Option<&'a Args<'a>>,
-}
-
-#[allow(missing_docs)]
-pub fn arg<'a, T: 'a + fmt::Display + ?Sized>(name: &'a str, value: &'a T) -> Arg<'a, T> {
-    Arg {
-        name: name,
-        value: value,
-        prev: None,
-    }
-}
-
-#[allow(missing_docs)]
-pub trait Args<'a> {
-    fn arg<T: 'a + fmt::Display + ?Sized>(&'a self, name: &'a str, value: &'a T) -> Arg<'a, T>
-        where Self: Sized
-    {
-        Arg {
-            name: name,
-            value: value,
-            prev: Some(self),
-        }
-    }
-
-    fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result;
-
-    fn get(&'a self, name: &str) -> Option<&'a Args<'a>>;
-}
-
-impl<'a, T> Args<'a> for Arg<'a, T>
-    where T: std::fmt::Display
-{
-    fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.value.fmt(f)
-    }
-
-    fn get(&'a self, name: &str) -> Option<&'a Args<'a>> {
-        if self.name == name {
-            Some(self)
-        } else if let Some(prev) = self.prev {
-            prev.get(name)
-        } else {
-            None
-        }
-    }
-}
-
-impl<'a, 'b> fmt::Display for Args<'a> + 'b {
-    /// Forward `fmt::Display` to the underlying value.
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.fmt_value(f)
     }
 }
 
