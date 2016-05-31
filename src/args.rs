@@ -66,6 +66,26 @@ impl<'a, 'b> fmt::Display for Args<'a> + 'b {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn it_works() {}
+    fn fmt_works() {
+        let name = "George";
+        let args: &Args = &arg("name", &name);
+        assert_eq!(format!("{}", args), "George");
+    }
+
+    #[test]
+    fn get_works() {
+        let name = "John";
+        let args: &Args = &arg("name", &name);
+        assert_eq!(format!("{}", args.get("name").unwrap()), "John");
+    }
+
+    #[test]
+    fn numbers_work() {
+        let count = 3;
+        let args: &Args = &arg("count", &count);
+        assert_eq!(format!("{}", args.get("count").unwrap()), "3");
+    }
 }
