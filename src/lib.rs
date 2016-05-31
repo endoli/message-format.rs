@@ -11,8 +11,8 @@
 //!
 //! This crate provides [ICU-style message formatting]. This provides
 //! for formatting values taking localization rules into account. ICU
-//! MessageFormat is widely supported in many languages and environments.
-//! This library will endeavor to support all of the ICU MessageFormat
+//! Message Format is widely supported in many languages and environments.
+//! This library will endeavor to support all of the ICU Message Format
 //! with the exception of the deprecated `ChoiceFormat`.
 //!
 //! [`Message`]: struct.Message.html
