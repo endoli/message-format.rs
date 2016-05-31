@@ -45,6 +45,6 @@ mod tests {
         let fmt = SimpleFormat::new("name");
         let mut output = String::new();
         fmt.apply_format(&mut output, &arg("name", &"John")).unwrap();
-        assert_eq!("", output);
+        assert_eq!("John", output);
     }
 }

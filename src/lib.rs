@@ -97,14 +97,18 @@ impl<'a, T> Args<'a> for Arg<'a, T>
         self.value.fmt(f)
     }
 
-    fn next(&self) -> Option<&'a Args<'a>> {
-        self.prev
+    fn get(&self, name: &str) -> Option<&fmt::Display> {
+        if self.name == name {
+            Some(self.value)
+        } else if let Some(prev) = self.prev {
+            prev.get(name)
+        } else {
+            None
+        }
     }
 
-    #[allow(missing_docs)]
-    fn get(&self, _name: &str) -> Option<&fmt::Display> {
-        None
-        // self.args.iter().find(|ref a| a.name == name).map(|a| a.value)
+    fn next(&self) -> Option<&'a Args<'a>> {
+        self.prev
     }
 }
 
