@@ -83,6 +83,8 @@ pub trait Args<'a> {
         }
     }
 
+    fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result;
+
     fn get(&self, name: &str) -> Option<&fmt::Display>;
 
     fn next(&self) -> Option<&'a Args<'a>>;
@@ -91,6 +93,10 @@ pub trait Args<'a> {
 impl<'a, T> Args<'a> for Arg<'a, T>
     where T: std::fmt::Display
 {
+    fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.value.fmt(f)
+    }
+
     fn next(&self) -> Option<&'a Args<'a>> {
         self.prev
     }
@@ -99,6 +105,13 @@ impl<'a, T> Args<'a> for Arg<'a, T>
     fn get(&self, _name: &str) -> Option<&fmt::Display> {
         None
         // self.args.iter().find(|ref a| a.name == name).map(|a| a.value)
+    }
+}
+
+impl<'a> fmt::Display for Args<'a> {
+    /// Forward `fmt::Display` to the underlying value.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.fmt_value(f)
     }
 }
 
