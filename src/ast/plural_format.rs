@@ -67,43 +67,43 @@ impl PluralFormat {
     }
 
     /// Set the `message` to be used for a literal value.
-    pub fn literal(mut self, literal: i64, message: Message) -> Self {
+    pub fn literal(&mut self, literal: i64, message: Message) -> &mut Self {
         self.literals.insert(literal, message);
         self
     }
 
     /// Apply an `offset`.
-    pub fn offset(mut self, offset: i64) -> Self {
+    pub fn offset(&mut self, offset: i64) -> &mut Self {
         self.offset = offset;
         self
     }
 
     /// Set the `message` for `PluralCategory::Zero`.
-    pub fn zero(mut self, message: Message) -> Self {
+    pub fn zero(&mut self, message: Message) -> &mut Self {
         self.zero = Some(message);
         self
     }
 
     /// Set the `message` for `PluralCategory::One`.
-    pub fn one(mut self, message: Message) -> Self {
+    pub fn one(&mut self, message: Message) -> &mut Self {
         self.one = Some(message);
         self
     }
 
     /// Set the `message` for `PluralCategory::Two`.
-    pub fn two(mut self, message: Message) -> Self {
+    pub fn two(&mut self, message: Message) -> &mut Self {
         self.two = Some(message);
         self
     }
 
     /// Set the `message` for `PluralCategory::Few`.
-    pub fn few(mut self, message: Message) -> Self {
+    pub fn few(&mut self, message: Message) -> &mut Self {
         self.few = Some(message);
         self
     }
 
     /// Set the `message` for `PluralCategory::Many`.
-    pub fn many(mut self, message: Message) -> Self {
+    pub fn many(&mut self, message: Message) -> &mut Self {
         self.many = Some(message);
         self
     }
