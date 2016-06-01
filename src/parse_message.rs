@@ -30,7 +30,9 @@ impl fmt::Display for ParseError {
     }
 }
 
-/// Parse some text and hopefully return a `Message`.
+/// Parse some text and hopefully return a [`Message`].
+///
+/// [`Message`]: struct.Message.html
 pub fn parse_message(_message: &str) -> Result<Message, ParseError> {
     Err(ParseError::NotImplemented)
 }

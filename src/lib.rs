@@ -38,6 +38,42 @@ pub use self::parse_message::parse_message;
 
 /// A message that has been localized and can be formatted in a
 /// locale-aware manner.
+///
+/// While a `Message` can be created directly from [`ast::Format`]
+/// components, it is easiest to create it from [`parse_message`].
+///
+/// A message can be formatted, returning a `String`:
+///
+/// ```
+/// use message_format::*;
+///
+/// let m = Message::new(vec![Box::new(ast::SimpleFormat::new("name")),
+///                           Box::new(ast::PlainText::new(" went to ")),
+///                           Box::new(ast::SimpleFormat::new("place")),
+///                           Box::new(ast::PlainText::new("."))]);
+/// assert_eq!(&m.format_message(&arg("name", &"Jacob").arg("place", &"the store")),
+///            "Jacob went to the store.");
+/// ```
+///
+/// It can also be written to a stream, but this is more cumbersome:
+///
+///
+/// ```
+/// use message_format::*;
+///
+/// let m = Message::new(vec![Box::new(ast::SimpleFormat::new("name")),
+///                           Box::new(ast::PlainText::new(" went to ")),
+///                           Box::new(ast::SimpleFormat::new("place")),
+///                           Box::new(ast::PlainText::new("."))]);
+/// let mut output = String::new();
+/// m.write_message(&mut output, &arg("name", &"Jacob").arg("place", &"the store")).unwrap();
+/// assert_eq!(output, "Jacob went to the store.".to_string());
+/// ```
+///
+/// In the future, the code involved above will be simplified.
+///
+/// [`ast::Format`]: ast/trait.Format.html
+/// [`parse_message`]: fn.parse_message.html
 pub struct Message {
     parts: Vec<Box<Format>>,
 }
@@ -61,20 +97,5 @@ impl Message {
             try!(part.apply_format(stream, args));
         }
         Ok(())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let m = Message::new(vec![Box::new(ast::SimpleFormat::new("name")),
-                                  Box::new(ast::PlainText::new(" went to ")),
-                                  Box::new(ast::SimpleFormat::new("place")),
-                                  Box::new(ast::PlainText::new("."))]);
-        assert_eq!(&m.format_message(&arg("name", &"Jacob").arg("place", &"the store")),
-                   "Jacob went to the store.");
     }
 }

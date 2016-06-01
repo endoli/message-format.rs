@@ -6,14 +6,14 @@
 
 use std::fmt;
 
-#[allow(missing_docs)]
+/// An argument holder.
 pub struct Arg<'a, T: 'a + fmt::Display + ?Sized> {
     name: &'a str,
     value: &'a T,
     prev: Option<&'a Args<'a>>,
 }
 
-#[allow(missing_docs)]
+/// Create an argument holder.
 pub fn arg<'a, T: 'a + fmt::Display + ?Sized>(name: &'a str, value: &'a T) -> Arg<'a, T> {
     Arg {
         name: name,
@@ -22,8 +22,11 @@ pub fn arg<'a, T: 'a + fmt::Display + ?Sized>(name: &'a str, value: &'a T) -> Ar
     }
 }
 
-#[allow(missing_docs)]
+/// An argument holder, but without a polymorphic type parameter.
 pub trait Args<'a> {
+    /// Add an additional argument. This returns a new value which maintains a link
+    /// to the old value. You must maintain a reference to the return value for it to
+    /// remain valid.
     fn arg<T: 'a + fmt::Display + ?Sized>(&'a self, name: &'a str, value: &'a T) -> Arg<'a, T>
         where Self: Sized
     {
@@ -34,8 +37,13 @@ pub trait Args<'a> {
         }
     }
 
+    /// Given an argument, format it using the given formatter.
+    ///
+    /// This is an internal method used by the implementation of
+    /// `fmt::Display` for `Args<'a>`.
     fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result;
 
+    /// Retrieve the argument with the given `name`.
     fn get(&'a self, name: &str) -> Option<&'a Args<'a>>;
 }
 
