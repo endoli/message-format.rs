@@ -62,6 +62,18 @@ impl Message {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn it_works() {}
+    fn it_works() {
+        let m = Message::new(vec![Box::new(ast::SimpleFormat::new("name")),
+                                  Box::new(ast::PlainText::new(" went to ")),
+                                  Box::new(ast::SimpleFormat::new("place")),
+                                  Box::new(ast::PlainText::new("."))]);
+        let mut output = String::new();
+        m.format_message(&mut output,
+                            &arg("name", &"Jacob").arg("place", &"the store"))
+            .unwrap();
+        assert_eq!(output, "Jacob went to the store.".to_string());
+    }
 }
