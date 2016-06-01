@@ -6,7 +6,11 @@
 
 use std::error::Error;
 use std::fmt;
+use std::str;
 
+use nom::IResult;
+
+use super::ast;
 use super::Message;
 
 /// An error resulting from `parse_message`.
@@ -30,9 +34,50 @@ impl fmt::Display for ParseError {
     }
 }
 
+named!(format_body <&[u8], Box<ast::Format> >,
+    map!(is_not!("}"), |name| Box::new(ast::SimpleFormat::new(str::from_utf8(name).unwrap()))));
+
+named!(format <&[u8], Box<ast::Format> >,
+    delimited!(
+        char!('{'),
+        format_body,
+        char!('}')));
+
+named!(plain_text <&[u8], Box<ast::Format> >,
+    map!(is_not!("{"), |text| Box::new(ast::PlainText::new(str::from_utf8(text).unwrap()))));
+
+named!(message_parts <&[u8], Vec<Box<ast::Format> > >,
+    many0!(alt!(call!(format) | call!(plain_text))));
+
+named!(message_parser <&[u8], Message>,
+    chain!(
+        parts: message_parts,
+        || Message::new(parts)));
+
 /// Parse some text and hopefully return a [`Message`].
 ///
 /// [`Message`]: struct.Message.html
-pub fn parse_message(_message: &str) -> Result<Message, ParseError> {
-    Err(ParseError::NotImplemented)
+pub fn parse_message(message: &str) -> Result<Message, ParseError> {
+    match message_parser(message.as_bytes()) {
+        IResult::Error(_) => Err(ParseError::NotImplemented),
+        IResult::Incomplete(_) => Err(ParseError::NotImplemented),
+        IResult::Done(_, m) => Ok(m),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use super::super::{arg, Args};
+
+    #[test]
+    fn it_works() {
+        match parse_message("{name} is from {city}.") {
+            Ok(m) => {
+                assert_eq!(m.format_message(&arg("name", &"Hendrik").arg("city", &"Berlin")),
+                           "Hendrik is from Berlin.");
+            }
+            Err(e) => panic!("Parse failed: {}", e),
+        }
+    }
 }
