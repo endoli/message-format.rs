@@ -59,7 +59,7 @@ named!(message_parser <&[u8], Message>,
 /// [`Message`]: struct.Message.html
 pub fn parse_message(message: &str) -> Result<Message, ParseError> {
     match message_parser(message.as_bytes()) {
-        IResult::Error(_) => Err(ParseError::NotImplemented),
+        IResult::Error(_) |
         IResult::Incomplete(_) => Err(ParseError::NotImplemented),
         IResult::Done(_, m) => Ok(m),
     }
