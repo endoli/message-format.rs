@@ -48,11 +48,8 @@ impl Message {
         Message { parts: parts }
     }
 
-    /// Format a message to a stream.
-    pub fn format_message<'f>(&'f self,
-                              stream: &mut fmt::Write,
-                              args: &'f Args<'f>)
-                              -> fmt::Result {
+    /// Write a message to a stream.
+    pub fn write_message<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
         for part in &self.parts {
             try!(part.apply_format(stream, args));
         }
@@ -71,8 +68,8 @@ mod tests {
                                   Box::new(ast::SimpleFormat::new("place")),
                                   Box::new(ast::PlainText::new("."))]);
         let mut output = String::new();
-        m.format_message(&mut output,
-                            &arg("name", &"Jacob").arg("place", &"the store"))
+        m.write_message(&mut output,
+                           &arg("name", &"Jacob").arg("place", &"the store"))
             .unwrap();
         assert_eq!(output, "Jacob went to the store.".to_string());
     }
