@@ -160,14 +160,14 @@ impl Format for PluralFormat {
 
 #[cfg(test)]
 mod tests {
-    use icu::parse_message;
+    use icu::parse;
     use super::PluralFormat;
     use {arg, Format};
 
     #[test]
     fn it_works() {
-        let mut fmt = PluralFormat::new("count", parse_message("Other").unwrap());
-        fmt.one(parse_message("One").unwrap());
+        let mut fmt = PluralFormat::new("count", parse("Other").unwrap());
+        fmt.one(parse("One").unwrap());
 
         let mut output = String::new();
         fmt.apply_format(&mut output, &arg("count", 0)).unwrap();

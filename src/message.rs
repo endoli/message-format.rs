@@ -12,18 +12,14 @@ use {Args, Format};
 /// locale-aware manner.
 ///
 /// While a `Message` can be created directly from [`Format`]
-/// components, it is easiest to create it from [`parse_message`].
+/// components, it is easiest to create it from [`icu::parse`].
 ///
 /// A message can be formatted, returning a `String`:
 ///
 /// ```
 /// use message_format::*;
-/// use message_format::icu::*;
 ///
-/// let m = Message::new(vec![Box::new(ast::SimpleFormat::new("name")),
-///                           Box::new(ast::PlainText::new(" went to ")),
-///                           Box::new(ast::SimpleFormat::new("place")),
-///                           Box::new(ast::PlainText::new("."))]);
+/// let m = icu::parse("{name} went to {place}.").unwrap();
 /// assert_eq!(&m.format_message(&arg("name", "Jacob").arg("place", "the store")),
 ///            "Jacob went to the store.");
 /// ```
@@ -33,21 +29,17 @@ use {Args, Format};
 ///
 /// ```
 /// use message_format::*;
-/// use message_format::icu::*;
 ///
-/// let m = Message::new(vec![Box::new(ast::SimpleFormat::new("name")),
-///                           Box::new(ast::PlainText::new(" went to ")),
-///                           Box::new(ast::SimpleFormat::new("place")),
-///                           Box::new(ast::PlainText::new("."))]);
+/// let m = icu::parse("{name} went to {place}.").unwrap();
 /// let mut output = String::new();
 /// m.write_message(&mut output, &arg("name", "Jacob").arg("place", "the store")).unwrap();
-/// assert_eq!(output, "Jacob went to the store.".to_string());
+/// assert_eq!(output, "Jacob went to the store.");
 /// ```
 ///
 /// In the future, the code involved above will be simplified.
 ///
 /// [`Format`]: trait.Format.html
-/// [`parse_message`]: icu/fn.parse_message.html
+/// [`icu::parse`]: icu/fn.parse.html
 pub struct Message {
     #[doc(hidden)]
     pub parts: Vec<Box<Format>>,

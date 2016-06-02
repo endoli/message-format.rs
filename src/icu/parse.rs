@@ -13,7 +13,7 @@ use nom::IResult;
 use super::ast;
 use {Format, Message};
 
-/// An error resulting from `parse_message`.
+/// An error resulting from `parse`.
 #[derive(Clone,Debug)]
 pub enum ParseError {
     /// The message could not be parsed.
@@ -57,7 +57,7 @@ named!(message_parser <&[u8], Message>,
 /// Parse some text and hopefully return a [`Message`].
 ///
 /// [`Message`]: ../struct.Message.html
-pub fn parse_message(message: &str) -> Result<Message, ParseError> {
+pub fn parse(message: &str) -> Result<Message, ParseError> {
     match message_parser(message.as_bytes()) {
         IResult::Error(_) |
         IResult::Incomplete(_) => Err(ParseError::NotImplemented),
@@ -72,7 +72,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        match parse_message("{name} is from {city}.") {
+        match parse("{name} is from {city}.") {
             Ok(m) => {
                 assert_eq!(m.format_message(&arg("name", "Hendrik").arg("city", "Berlin")),
                            "Hendrik is from Berlin.");

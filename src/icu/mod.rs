@@ -10,4 +10,4 @@
 pub mod ast;
 mod parse;
 
-pub use self::parse::parse_message;
+pub use self::parse::parse;
