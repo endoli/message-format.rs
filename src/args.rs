@@ -4,74 +4,40 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::fmt;
-
-use super::{AsFormattable, Formattable};
+use super::{AsValue, Value};
 
 /// An argument holder.
-pub struct Arg<'a, T: 'a + fmt::Display + AsFormattable<'a> + ?Sized> {
+pub struct Args<'a> {
     name: &'a str,
-    value: &'a T,
-    formattable: Formattable<'a>,
+    value: Value<'a>,
     prev: Option<&'a Args<'a>>,
 }
 
 /// Create an argument holder.
-pub fn arg<'a, T: 'a + fmt::Display + AsFormattable<'a> + ?Sized>(name: &'a str,
-                                                                  value: &'a T)
-                                                                  -> Arg<'a, T> {
-    Arg {
+pub fn arg<'a, T: 'a + AsValue<'a>>(name: &'a str, value: T) -> Args<'a> {
+    Args {
         name: name,
-        value: value,
-        formattable: value.as_formattable(),
+        value: value.as_formattable(),
         prev: None,
     }
 }
 
-/// An argument holder, but without a polymorphic type parameter.
-pub trait Args<'a> {
+impl<'a> Args<'a> {
     /// Add an additional argument. This returns a new value which maintains a link
     /// to the old value. You must maintain a reference to the return value for it to
     /// remain valid.
-    fn arg<T: 'a + fmt::Display + AsFormattable<'a> + ?Sized>(&'a self,
-                                                              name: &'a str,
-                                                              value: &'a T)
-                                                              -> Arg<'a, T>
+    pub fn arg<T: 'a + AsValue<'a>>(&'a self, name: &'a str, value: T) -> Args<'a>
         where Self: Sized
     {
-        Arg {
+        Args {
             name: name,
-            value: value,
-            formattable: value.as_formattable(),
+            value: value.as_formattable(),
             prev: Some(self),
         }
     }
 
-    /// Given an argument, format it using the given formatter.
-    ///
-    /// This is an internal method used by the implementation of
-    /// `fmt::Display` for `Args<'a>`.
-    fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result;
-
-    /// Retrieve the `Formattable` wrapper around the argument value.
-    fn formattable(&'a self) -> &'a Formattable<'a>;
-
     /// Retrieve the argument with the given `name`.
-    fn get(&'a self, name: &str) -> Option<&'a Args<'a>>;
-}
-
-impl<'a, T> Args<'a> for Arg<'a, T>
-    where T: fmt::Display + AsFormattable<'a>
-{
-    fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.value.fmt(f)
-    }
-
-    fn formattable(&'a self) -> &'a Formattable<'a> {
-        &self.formattable
-    }
-
-    fn get(&'a self, name: &str) -> Option<&'a Args<'a>> {
+    pub fn get(&'a self, name: &str) -> Option<&'a Args<'a>> {
         if self.name == name {
             Some(self)
         } else if let Some(prev) = self.prev {
@@ -80,37 +46,30 @@ impl<'a, T> Args<'a> for Arg<'a, T>
             None
         }
     }
-}
 
-impl<'a, 'b> fmt::Display for Args<'a> + 'b {
-    /// Forward `fmt::Display` to the underlying value.
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.fmt_value(f)
+    /// Retrieve the `Value` wrapper around the argument value.
+    pub fn value(&'a self) -> &'a Value<'a> {
+        &self.value
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn fmt_works() {
-        let name = "George";
-        let args: &Args = &arg("name", &name);
-        assert_eq!(format!("{}", args), "George");
-    }
+    use super::super::Value;
 
     #[test]
     fn get_works() {
         let name = "John";
-        let args: &Args = &arg("name", &name);
-        assert_eq!(format!("{}", args.get("name").unwrap()), "John");
+        let args = arg("name", name);
+        assert_eq!(format!("{}", args.get("name").unwrap().value()), "John");
     }
 
     #[test]
     fn numbers_work() {
         let count = 3;
-        let args: &Args = &arg("count", &count);
-        assert_eq!(format!("{}", args.get("count").unwrap()), "3");
+        let args = arg("count", count);
+        assert_eq!(args.get("count").unwrap().value(), &Value::Number(3));
+        assert_eq!(format!("{}", args.get("count").unwrap().value()), "3");
     }
 }

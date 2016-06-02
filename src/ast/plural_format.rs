@@ -9,7 +9,7 @@ use std::fmt;
 
 use super::Format;
 use super::english_cardinal_classifier;
-use {Args, Formattable, Message};
+use {Args, Message, Value};
 
 /// The set of [grammatical numbers] that we support.
 ///
@@ -147,8 +147,8 @@ impl PluralFormat {
 impl Format for PluralFormat {
     fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
         if let Some(arg) = args.get(&self.variable_name) {
-            let value = match *arg.formattable() {
-                Formattable::Number(n) => n,
+            let value = match *arg.value() {
+                Value::Number(n) => n,
                 _ => panic!("Wrong variable type."),
             };
             let offset_value = value - self.offset;
@@ -171,15 +171,15 @@ mod tests {
         fmt.one(parse_message("One").unwrap());
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("count", &0)).unwrap();
+        fmt.apply_format(&mut output, &arg("count", 0)).unwrap();
         assert_eq!("Other", output);
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("count", &1)).unwrap();
+        fmt.apply_format(&mut output, &arg("count", 1)).unwrap();
         assert_eq!("One", output);
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("count", &3)).unwrap();
+        fmt.apply_format(&mut output, &arg("count", 3)).unwrap();
         assert_eq!("Other", output);
     }
 }

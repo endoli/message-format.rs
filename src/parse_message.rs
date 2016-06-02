@@ -68,13 +68,13 @@ pub fn parse_message(message: &str) -> Result<Message, ParseError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use super::super::{arg, Args};
+    use super::super::arg;
 
     #[test]
     fn it_works() {
         match parse_message("{name} is from {city}.") {
             Ok(m) => {
-                assert_eq!(m.format_message(&arg("name", &"Hendrik").arg("city", &"Berlin")),
+                assert_eq!(m.format_message(&arg("name", "Hendrik").arg("city", "Berlin")),
                            "Hendrik is from Berlin.");
             }
             Err(e) => panic!("Parse failed: {}", e),

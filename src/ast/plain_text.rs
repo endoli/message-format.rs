@@ -40,7 +40,7 @@ mod tests {
     fn it_works() {
         let fmt = PlainText::new("Test text.");
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("John", &"George")).unwrap();
+        fmt.apply_format(&mut output, &arg("John", "George")).unwrap();
         assert_eq!("Test text.", output);
     }
 }

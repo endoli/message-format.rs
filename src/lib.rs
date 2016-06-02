@@ -30,12 +30,12 @@ use std::fmt;
 
 pub mod ast;
 mod args;
-mod formattable;
+mod value;
 mod parse_message;
 
 use ast::Format;
 pub use self::args::{arg, Args};
-pub use self::formattable::{AsFormattable, Formattable};
+pub use self::value::{AsValue, Value};
 pub use self::parse_message::parse_message;
 
 /// A message that has been localized and can be formatted in a
@@ -53,7 +53,7 @@ pub use self::parse_message::parse_message;
 ///                           Box::new(ast::PlainText::new(" went to ")),
 ///                           Box::new(ast::SimpleFormat::new("place")),
 ///                           Box::new(ast::PlainText::new("."))]);
-/// assert_eq!(&m.format_message(&arg("name", &"Jacob").arg("place", &"the store")),
+/// assert_eq!(&m.format_message(&arg("name", "Jacob").arg("place", "the store")),
 ///            "Jacob went to the store.");
 /// ```
 ///
@@ -68,7 +68,7 @@ pub use self::parse_message::parse_message;
 ///                           Box::new(ast::SimpleFormat::new("place")),
 ///                           Box::new(ast::PlainText::new("."))]);
 /// let mut output = String::new();
-/// m.write_message(&mut output, &arg("name", &"Jacob").arg("place", &"the store")).unwrap();
+/// m.write_message(&mut output, &arg("name", "Jacob").arg("place", "the store")).unwrap();
 /// assert_eq!(output, "Jacob went to the store.".to_string());
 /// ```
 ///
