@@ -48,7 +48,7 @@ impl Format for SelectFormat {
                 Value::Str(str) => str,
                 _ => panic!("Wrong variable type."),
             };
-            let message = self.lookup_message(&value);
+            let message = self.lookup_message(value);
             try!(message.write_message(stream, args));
             Ok(())
         } else {
