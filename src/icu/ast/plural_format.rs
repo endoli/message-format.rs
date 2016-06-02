@@ -7,9 +7,8 @@
 use std::collections::HashMap;
 use std::fmt;
 
-use super::Format;
 use super::english_cardinal_classifier;
-use {Args, Message, Value};
+use {Args, Format, Message, Value};
 
 /// The set of [grammatical numbers] that we support.
 ///
@@ -161,9 +160,9 @@ impl Format for PluralFormat {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use ast::Format;
-    use {arg, parse_message};
+    use icu::parse_message;
+    use super::PluralFormat;
+    use {arg, Format};
 
     #[test]
     fn it_works() {

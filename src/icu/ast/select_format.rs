@@ -8,8 +8,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::hash::Hash;
 
-use ast::Format;
-use {Args, Message};
+use {Args, Format, Message};
 
 /// Using a value, select the appropriate message and format it.
 pub struct SelectFormat<K> {

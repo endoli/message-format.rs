@@ -6,8 +6,7 @@
 
 use std::fmt;
 
-use super::Format;
-use Args;
+use {Args, Format};
 
 /// A placeholder for a value. Used by `PluralFormat`.
 pub struct PlaceholderFormat {

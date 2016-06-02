@@ -6,8 +6,7 @@
 
 use std::fmt;
 
-use super::Format;
-use Args;
+use {Args, Format};
 
 /// A string that should be output. Used for the text in between
 /// formats.
@@ -32,9 +31,8 @@ impl Format for PlainText {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use ast::Format;
-    use arg;
+    use super::PlainText;
+    use {arg, Format};
 
     #[test]
     fn it_works() {

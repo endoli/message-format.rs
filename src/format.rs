@@ -4,26 +4,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Message Format AST
-//!
-
 use std::fmt;
 
-mod placeholder_format;
-mod plain_text;
-mod plural_classifiers;
-mod plural_format;
-mod select_format;
-mod simple_format;
-
-pub use self::placeholder_format::PlaceholderFormat;
-pub use self::plain_text::PlainText;
-pub use self::plural_classifiers::*;
-pub use self::plural_format::{PluralCategory, PluralFormat};
-pub use self::select_format::SelectFormat;
-pub use self::simple_format::SimpleFormat;
-
-use super::Args;
+use Args;
 
 /// The part of a message which formats a value.
 pub trait Format {

@@ -11,7 +11,7 @@ use std::str;
 use nom::IResult;
 
 use super::ast;
-use super::Message;
+use {Format, Message};
 
 /// An error resulting from `parse_message`.
 #[derive(Clone,Debug)]
@@ -34,19 +34,19 @@ impl fmt::Display for ParseError {
     }
 }
 
-named!(format_body <&[u8], Box<ast::Format> >,
+named!(format_body <&[u8], Box<Format> >,
     map!(is_not!("}"), |name| Box::new(ast::SimpleFormat::new(str::from_utf8(name).unwrap()))));
 
-named!(format <&[u8], Box<ast::Format> >,
+named!(format <&[u8], Box<Format> >,
     delimited!(
         char!('{'),
         format_body,
         char!('}')));
 
-named!(plain_text <&[u8], Box<ast::Format> >,
+named!(plain_text <&[u8], Box<Format> >,
     map!(is_not!("{"), |text| Box::new(ast::PlainText::new(str::from_utf8(text).unwrap()))));
 
-named!(message_parts <&[u8], Vec<Box<ast::Format> > >,
+named!(message_parts <&[u8], Vec<Box<Format> > >,
     many0!(alt!(call!(format) | call!(plain_text))));
 
 named!(message_parser <&[u8], Message>,
@@ -56,7 +56,7 @@ named!(message_parser <&[u8], Message>,
 
 /// Parse some text and hopefully return a [`Message`].
 ///
-/// [`Message`]: struct.Message.html
+/// [`Message`]: ../struct.Message.html
 pub fn parse_message(message: &str) -> Result<Message, ParseError> {
     match message_parser(message.as_bytes()) {
         IResult::Error(_) |
@@ -68,7 +68,7 @@ pub fn parse_message(message: &str) -> Result<Message, ParseError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use super::super::arg;
+    use arg;
 
     #[test]
     fn it_works() {

@@ -6,8 +6,7 @@
 
 use std::fmt;
 
-use super::Format;
-use Args;
+use {Args, Format};
 
 /// A simple message consisting of a value to be formatted.
 pub struct SimpleFormat {
@@ -36,9 +35,8 @@ impl Format for SimpleFormat {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use ast::Format;
-    use arg;
+    use super::SimpleFormat;
+    use {arg, Format};
 
     #[test]
     fn it_works() {
