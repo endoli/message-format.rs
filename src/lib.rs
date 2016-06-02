@@ -30,10 +30,12 @@ use std::fmt;
 
 pub mod ast;
 mod args;
+mod formattable;
 mod parse_message;
 
 use ast::Format;
 pub use self::args::{arg, Args};
+pub use self::formattable::{AsFormattable, Formattable};
 pub use self::parse_message::parse_message;
 
 /// A message that has been localized and can be formatted in a

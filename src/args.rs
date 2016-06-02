@@ -6,18 +6,24 @@
 
 use std::fmt;
 
+use super::{AsFormattable, Formattable};
+
 /// An argument holder.
-pub struct Arg<'a, T: 'a + fmt::Display + ?Sized> {
+pub struct Arg<'a, T: 'a + fmt::Display + AsFormattable<'a> + ?Sized> {
     name: &'a str,
     value: &'a T,
+    formattable: Formattable<'a>,
     prev: Option<&'a Args<'a>>,
 }
 
 /// Create an argument holder.
-pub fn arg<'a, T: 'a + fmt::Display + ?Sized>(name: &'a str, value: &'a T) -> Arg<'a, T> {
+pub fn arg<'a, T: 'a + fmt::Display + AsFormattable<'a> + ?Sized>(name: &'a str,
+                                                                  value: &'a T)
+                                                                  -> Arg<'a, T> {
     Arg {
         name: name,
         value: value,
+        formattable: value.as_formattable(),
         prev: None,
     }
 }
@@ -27,12 +33,16 @@ pub trait Args<'a> {
     /// Add an additional argument. This returns a new value which maintains a link
     /// to the old value. You must maintain a reference to the return value for it to
     /// remain valid.
-    fn arg<T: 'a + fmt::Display + ?Sized>(&'a self, name: &'a str, value: &'a T) -> Arg<'a, T>
+    fn arg<T: 'a + fmt::Display + AsFormattable<'a> + ?Sized>(&'a self,
+                                                              name: &'a str,
+                                                              value: &'a T)
+                                                              -> Arg<'a, T>
         where Self: Sized
     {
         Arg {
             name: name,
             value: value,
+            formattable: value.as_formattable(),
             prev: Some(self),
         }
     }
@@ -43,15 +53,22 @@ pub trait Args<'a> {
     /// `fmt::Display` for `Args<'a>`.
     fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result;
 
+    /// Retrieve the `Formattable` wrapper around the argument value.
+    fn formattable(&'a self) -> &'a Formattable<'a>;
+
     /// Retrieve the argument with the given `name`.
     fn get(&'a self, name: &str) -> Option<&'a Args<'a>>;
 }
 
 impl<'a, T> Args<'a> for Arg<'a, T>
-    where T: fmt::Display
+    where T: fmt::Display + AsFormattable<'a>
 {
     fn fmt_value(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.value.fmt(f)
+    }
+
+    fn formattable(&'a self) -> &'a Formattable<'a> {
+        &self.formattable
     }
 
     fn get(&'a self, name: &str) -> Option<&'a Args<'a>> {
