@@ -6,45 +6,74 @@
 
 use std::collections::HashMap;
 use std::fmt;
-use std::hash::Hash;
 
-use {Args, Format, Message};
+use {Args, Format, Message, Value};
 
 /// Using a value, select the appropriate message and format it.
-pub struct SelectFormat<K> {
+pub struct SelectFormat {
     /// The name of the variable whose value should be formatted.
-    #[allow(dead_code)]
     variable_name: String,
     /// Given a value of a variable, this maps that to a message format.
-    #[allow(dead_code)]
-    mappings: HashMap<K, Message>,
+    mappings: HashMap<String, Message>,
     /// The message format to use if no valid mapping is found for
     /// the variable value.
     default: Message,
 }
 
-impl<K> SelectFormat<K>
-    where K: Eq + Hash
-{
+impl SelectFormat {
     /// Construct a `SelectFormat`.
     pub fn new(variable_name: &str, default: Message) -> Self {
         SelectFormat {
             variable_name: variable_name.to_string(),
-            mappings: HashMap::<K, Message>::new(),
+            mappings: HashMap::<String, Message>::new(),
             default: default,
         }
     }
 
     /// Map a value for a particular message.
-    pub fn map(mut self, value: K, message: Message) -> Self {
-        self.mappings.insert(value, message);
-        self
+    pub fn map(&mut self, value: &str, message: Message) {
+        self.mappings.insert(value.to_string(), message);
+    }
+
+    /// Given a value, determine which `Message` to use.
+    pub fn lookup_message(&self, value: &str) -> &Message {
+        self.mappings.get(value).unwrap_or(&self.default)
     }
 }
 
-impl<K> Format for SelectFormat<K> {
+impl Format for SelectFormat {
     fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
-        try!(self.default.write_message(stream, args));
-        Ok(())
+        if let Some(arg) = args.get(&self.variable_name) {
+            let value = match *arg.value() {
+                Value::Str(str) => str,
+                _ => panic!("Wrong variable type."),
+            };
+            let message = self.lookup_message(&value);
+            try!(message.write_message(stream, args));
+            Ok(())
+        } else {
+            Ok(())
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use icu::parse;
+    use super::SelectFormat;
+    use {arg, Format};
+
+    #[test]
+    fn it_works() {
+        let mut fmt = SelectFormat::new("type", parse("Default").unwrap());
+        fmt.map("block", parse("Block").unwrap());
+
+        let mut output = String::new();
+        fmt.apply_format(&mut output, &arg("type", "block")).unwrap();
+        assert_eq!("Block", output);
+
+        let mut output = String::new();
+        fmt.apply_format(&mut output, &arg("type", "span")).unwrap();
+        assert_eq!("Default", output);
     }
 }
