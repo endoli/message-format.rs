@@ -6,8 +6,15 @@
 
 use std::fmt;
 
-/// A wrapper around a value, used with `Arg` so that a `Format`
+/// A wrapper around a value, used with [`Args`] so that a [`Format`]
 /// can access the original value when necessary.
+///
+/// These are not typically created directly, but are created automatically
+/// via the [`AsValue`] trait when creating [`Args`].
+///
+/// [`Args`]: struct.Args.html
+/// [`AsValue`]: trait.AsValue.html
+/// [`Format`]: trait.Format.html
 #[derive(Debug,PartialEq)]
 pub enum Value<'a> {
     /// Wrap an `i64`.

@@ -4,8 +4,12 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Message Format AST
+//! ICU Message Format AST Support
 //!
+//! This module provides the various [`Format`] implementations
+//! for the ICU Message Format functionality.
+//!
+//! [`Format`]: ../../trait.Format.html
 
 mod placeholder_format;
 mod plain_text;

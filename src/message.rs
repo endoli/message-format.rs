@@ -36,8 +36,6 @@ use {Args, Format};
 /// assert_eq!(output, "Jacob went to the store.");
 /// ```
 ///
-/// In the future, the code involved above will be simplified.
-///
 /// [`Format`]: trait.Format.html
 /// [`icu::parse`]: icu/fn.parse.html
 pub struct Message {

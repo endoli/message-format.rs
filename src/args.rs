@@ -6,7 +6,9 @@
 
 use super::{AsValue, Value};
 
-/// An argument holder.
+/// Holds the arguments being used to format a [`Message`].
+///
+/// [`Message`]: struct.Message.html
 pub struct Args<'a> {
     name: &'a str,
     value: Value<'a>,
@@ -14,6 +16,13 @@ pub struct Args<'a> {
 }
 
 /// Create an argument holder.
+///
+/// ```
+/// use message_format::arg;
+///
+/// let args = arg("name", "John");
+/// assert!(args.get("name").is_some());
+/// ```
 pub fn arg<'a, T: 'a + AsValue<'a>>(name: &'a str, value: T) -> Args<'a> {
     Args {
         name: name,
@@ -26,6 +35,15 @@ impl<'a> Args<'a> {
     /// Add an additional argument. This returns a new value which maintains a link
     /// to the old value. You must maintain a reference to the return value for it to
     /// remain valid.
+    ///
+    /// ```
+    /// use message_format::arg;
+    ///
+    /// let args = arg("name", "John");
+    /// let args = args.arg("city", "Rome");
+    /// assert!(args.get("name").is_some());
+    /// assert!(args.get("city").is_some());
+    /// ```
     pub fn arg<T: 'a + AsValue<'a>>(&'a self, name: &'a str, value: T) -> Args<'a>
         where Self: Sized
     {
@@ -37,6 +55,13 @@ impl<'a> Args<'a> {
     }
 
     /// Retrieve the argument with the given `name`.
+    ///
+    /// ```
+    /// use message_format::arg;
+    ///
+    /// let args = arg("count", 3);
+    /// let arg = args.get("count").unwrap();
+    /// ```
     pub fn get(&'a self, name: &str) -> Option<&'a Args<'a>> {
         if self.name == name {
             Some(self)
@@ -48,6 +73,18 @@ impl<'a> Args<'a> {
     }
 
     /// Retrieve the `Value` wrapper around the argument value.
+    ///
+    /// ```
+    /// use message_format::{arg, Value};
+    ///
+    /// let args = arg("count", 3);
+    /// let arg = args.get("count").unwrap();
+    /// if let &Value::Number(count) = arg.value() {
+    ///     assert_eq!(count, 3);
+    /// } else {
+    ///     panic!("The count was not a number!");
+    /// }
+    /// ```
     pub fn value(&'a self) -> &'a Value<'a> {
         &self.value
     }

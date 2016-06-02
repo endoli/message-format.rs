@@ -9,14 +9,12 @@
 //! A [`Message`] is a piece of user-visible text that typically has
 //! variable elements.
 //!
-//! This crate provides [ICU-style message formatting]. This provides
-//! for formatting values taking localization rules into account. ICU
-//! Message Format is widely supported in many languages and environments.
-//! This library will endeavor to support all of the ICU Message Format
-//! with the exception of the deprecated `ChoiceFormat`.
+//! This module currently provides support for messages using the
+//! [ICU Message Format]. In the future, we hope to support other
+//! message formats as well, especially L20n.
 //!
+//! [ICU Message Format]: icu/index.html
 //! [`Message`]: struct.Message.html
-//! [ICU-style message formatting]: http://userguide.icu-project.org/formatparse/messages
 
 #![warn(missing_docs)]
 #![deny(trivial_numeric_casts,
