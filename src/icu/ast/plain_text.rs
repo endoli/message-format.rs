@@ -10,6 +10,7 @@ use {Args, Format};
 
 /// A string that should be output. Used for the text in between
 /// formats.
+#[derive(Debug)]
 pub struct PlainText {
     /// The text that should be output.
     text: String,

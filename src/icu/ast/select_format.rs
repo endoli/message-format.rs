@@ -10,6 +10,7 @@ use std::fmt;
 use {Args, Format, Message, Value};
 
 /// Using a value, select the appropriate message and format it.
+#[derive(Debug)]
 pub struct SelectFormat {
     /// The name of the variable whose value should be formatted.
     variable_name: String,

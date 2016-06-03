@@ -11,6 +11,7 @@ use english_cardinal_classifier;
 use {Args, Format, Message, PluralCategory, Value};
 
 /// Format a value taking pluralization rules into account.
+#[derive(Debug)]
 pub struct PluralFormat {
     /// The name of the variable whose value should be formatted.
     variable_name: String,

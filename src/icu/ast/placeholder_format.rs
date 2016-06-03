@@ -9,6 +9,7 @@ use std::fmt;
 use {Args, Format};
 
 /// A placeholder for a value. Used by `PluralFormat`.
+#[derive(Debug)]
 pub struct PlaceholderFormat {
 }
 

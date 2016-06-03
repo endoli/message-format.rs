@@ -9,6 +9,7 @@ use std::fmt;
 use {Args, Format};
 
 /// A simple message consisting of a value to be formatted.
+#[derive(Debug)]
 pub struct SimpleFormat {
     /// The name of the variable whose value should be formatted.
     variable_name: String,

@@ -9,7 +9,7 @@ use std::fmt;
 use Args;
 
 /// The part of a message which formats a value.
-pub trait Format {
+pub trait Format: fmt::Debug {
     /// Format this message part.
     fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result;
 }
