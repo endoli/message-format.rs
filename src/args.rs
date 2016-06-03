@@ -8,6 +8,11 @@ use super::{AsValue, Value};
 
 /// Holds the arguments being used to format a [`Message`].
 ///
+/// This is a linked list. This avoids any allocations for a `Vec`
+/// or `HashMap`. There won't be enough arguments to most messages
+/// to make doing linear searches on the arguments costly enough
+/// to matter.
+///
 /// [`Message`]: struct.Message.html
 pub struct Args<'a> {
     name: &'a str,
