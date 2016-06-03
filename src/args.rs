@@ -72,7 +72,7 @@ impl<'a> Args<'a> {
         }
     }
 
-    /// Retrieve the `Value` wrapper around the argument value.
+    /// Retrieve the [`Value`] wrapper around the argument value.
     ///
     /// ```
     /// use message_format::{arg, Value};
@@ -85,6 +85,8 @@ impl<'a> Args<'a> {
     ///     panic!("The count was not a number!");
     /// }
     /// ```
+    ///
+    /// [`Value`]: enum.Value.html
     pub fn value(&'a self) -> &'a Value<'a> {
         &self.value
     }
