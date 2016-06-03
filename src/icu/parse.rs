@@ -34,22 +34,23 @@ impl fmt::Display for ParseError {
     }
 }
 
-named!(format_body <&[u8], Box<Format> >,
-    map!(is_not!("}"), |name| Box::new(ast::SimpleFormat::new(str::from_utf8(name).unwrap()))));
+named!(variable_name <&str, &str>, is_not_s!(",}"));
 
-named!(format <&[u8], Box<Format> >,
+named!(format <&str, Box<Format> >,
     delimited!(
-        char!('{'),
-        format_body,
-        char!('}')));
+        tag_s!("{"),
+        chain!(
+            name: variable_name,
+            || Box::new(ast::SimpleFormat::new(name))),
+        tag_s!("}")));
 
-named!(plain_text <&[u8], Box<Format> >,
-    map!(is_not!("{"), |text| Box::new(ast::PlainText::new(str::from_utf8(text).unwrap()))));
+named!(plain_text <&str, Box<Format> >,
+    map!(is_not_s!("{"), |text| Box::new(ast::PlainText::new(text))));
 
-named!(message_parts <&[u8], Vec<Box<Format> > >,
+named!(message_parts <&str, Vec<Box<Format> > >,
     many0!(alt!(call!(format) | call!(plain_text))));
 
-named!(message_parser <&[u8], Message>,
+named!(pub message_parser <&str, Message>,
     chain!(
         parts: message_parts,
         || Message::new(parts)));
@@ -58,7 +59,7 @@ named!(message_parser <&[u8], Message>,
 ///
 /// [`Message`]: ../struct.Message.html
 pub fn parse(message: &str) -> Result<Message, ParseError> {
-    match message_parser(message.as_bytes()) {
+    match message_parser(message) {
         IResult::Error(_) |
         IResult::Incomplete(_) => Err(ParseError::NotImplemented),
         IResult::Done(_, m) => Ok(m),
@@ -69,6 +70,7 @@ pub fn parse(message: &str) -> Result<Message, ParseError> {
 mod tests {
     use super::*;
     use arg;
+    use nom::IResult;
 
     #[test]
     fn it_works() {
@@ -78,6 +80,23 @@ mod tests {
                            "Hendrik is from Berlin.");
             }
             Err(e) => panic!("Parse failed: {}", e),
+        }
+    }
+
+    #[test]
+    fn incomplete_fails() {
+        match message_parser("{name") {
+            IResult::Incomplete(_) => {}
+            IResult::Error(e) => panic!("Expected incomplete failure: Got {}", e),
+            IResult::Done(_, _) => panic!("Expected incomplete failure, but succeeded."),
+        }
+    }
+
+    #[test]
+    fn all_text_works() {
+        match message_parser("Hello, world!") {
+            IResult::Done(_, _) => {}
+            _ => panic!("Expected successful parse."),
         }
     }
 }
