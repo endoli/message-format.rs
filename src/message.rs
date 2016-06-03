@@ -6,12 +6,12 @@
 
 use std::fmt;
 
-use {Args, Format};
+use {Args, MessagePart};
 
 /// A message that has been localized and can be formatted in a
 /// locale-aware manner.
 ///
-/// While a `Message` can be created directly from [`Format`]
+/// While a `Message` can be created directly from [`MessagePart`]
 /// components, it is easiest to create it from [`icu::parse`].
 ///
 /// A message can be formatted, returning a `String`:
@@ -36,19 +36,19 @@ use {Args, Format};
 /// assert_eq!(output, "Jacob went to the store.");
 /// ```
 ///
-/// [`Format`]: trait.Format.html
+/// [`MessagePart`]: trait.MessagePart.html
 /// [`icu::parse`]: icu/fn.parse.html
 #[derive(Debug)]
 pub struct Message {
     // This is pub due to icu::ast::PluralFormat. Once we address that, we
     // can make this private again.
     #[doc(hidden)]
-    pub parts: Vec<Box<Format>>,
+    pub parts: Vec<Box<MessagePart>>,
 }
 
 impl Message {
     /// Construct a message from constituent parts.
-    pub fn new(parts: Vec<Box<Format>>) -> Self {
+    pub fn new(parts: Vec<Box<MessagePart>>) -> Self {
         Message { parts: parts }
     }
 

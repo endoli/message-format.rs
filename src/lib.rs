@@ -120,15 +120,15 @@ extern crate nom;
 
 pub mod icu;
 mod args;
-mod format;
 mod message;
+mod message_part;
 mod plural_category;
 mod plural_classifiers;
 mod value;
 
 pub use self::args::{arg, Args};
-pub use self::format::Format;
 pub use self::message::Message;
+pub use self::message_part::MessagePart;
 pub use self::plural_category::PluralCategory;
 pub use self::plural_classifiers::*;
 pub use self::value::{AsValue, Value};

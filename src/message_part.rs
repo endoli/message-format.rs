@@ -8,8 +8,9 @@ use std::fmt;
 
 use Args;
 
-/// The part of a message which formats a value.
-pub trait Format: fmt::Debug {
+/// Part of a message. May be something that requires formatting a
+/// value or just plain text.
+pub trait MessagePart: fmt::Debug {
     /// Format this message part.
     fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result;
 }

@@ -11,7 +11,7 @@ use std::str;
 use nom::IResult;
 
 use super::ast;
-use {Format, Message};
+use {Message, MessagePart};
 
 /// An error resulting from `parse`.
 #[derive(Clone,Debug)]
@@ -36,7 +36,7 @@ impl fmt::Display for ParseError {
 
 named!(variable_name <&str, &str>, is_not_s!(",}"));
 
-named!(format <&str, Box<Format> >,
+named!(format <&str, Box<MessagePart> >,
     delimited!(
         tag_s!("{"),
         chain!(
@@ -44,10 +44,10 @@ named!(format <&str, Box<Format> >,
             || Box::new(ast::SimpleFormat::new(name))),
         tag_s!("}")));
 
-named!(plain_text <&str, Box<Format> >,
+named!(plain_text <&str, Box<MessagePart> >,
     map!(is_not_s!("{"), |text| Box::new(ast::PlainText::new(text))));
 
-named!(message_parts <&str, Vec<Box<Format> > >,
+named!(message_parts <&str, Vec<Box<MessagePart> > >,
     many0!(alt!(call!(format) | call!(plain_text))));
 
 named!(pub message_parser <&str, Message>,

@@ -6,7 +6,7 @@
 
 use std::fmt;
 
-use {Args, Format};
+use {Args, MessagePart};
 
 /// A placeholder for a value. Used by `PluralFormat`.
 #[derive(Debug)]
@@ -20,7 +20,7 @@ impl PlaceholderFormat {
     }
 }
 
-impl Format for PlaceholderFormat {
+impl MessagePart for PlaceholderFormat {
     fn apply_format(&self, _stream: &mut fmt::Write, _args: &Args) -> fmt::Result {
         unimplemented!();
     }

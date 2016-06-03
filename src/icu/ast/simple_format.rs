@@ -6,7 +6,7 @@
 
 use std::fmt;
 
-use {Args, Format};
+use {Args, MessagePart};
 
 /// A simple message consisting of a value to be formatted.
 #[derive(Debug)]
@@ -22,7 +22,7 @@ impl SimpleFormat {
     }
 }
 
-impl Format for SimpleFormat {
+impl MessagePart for SimpleFormat {
     fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
         if let Some(arg) = args.get(self.variable_name.as_str()) {
             try!(write!(stream, "{}", arg.value()));
@@ -37,7 +37,7 @@ impl Format for SimpleFormat {
 #[cfg(test)]
 mod tests {
     use super::SimpleFormat;
-    use {arg, Format};
+    use {arg, MessagePart};
 
     #[test]
     fn it_works() {

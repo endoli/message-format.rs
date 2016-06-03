@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use std::fmt;
 
 use english_cardinal_classifier;
-use {Args, Format, Message, PluralCategory, Value};
+use {Args, Message, MessagePart, PluralCategory, Value};
 
 /// Format a value taking pluralization rules into account.
 #[derive(Debug)]
@@ -115,7 +115,7 @@ impl PluralFormat {
     }
 }
 
-impl Format for PluralFormat {
+impl MessagePart for PluralFormat {
     fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
         if let Some(arg) = args.get(&self.variable_name) {
             let value = match *arg.value() {
@@ -134,7 +134,7 @@ impl Format for PluralFormat {
 mod tests {
     use icu::parse;
     use super::PluralFormat;
-    use {arg, Format};
+    use {arg, MessagePart};
 
     #[test]
     fn it_works() {

@@ -7,7 +7,7 @@
 use std::collections::HashMap;
 use std::fmt;
 
-use {Args, Format, Message, Value};
+use {Args, MessagePart, Message, Value};
 
 /// Using a value, select the appropriate message and format it.
 #[derive(Debug)]
@@ -42,7 +42,7 @@ impl SelectFormat {
     }
 }
 
-impl Format for SelectFormat {
+impl MessagePart for SelectFormat {
     fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
         if let Some(arg) = args.get(&self.variable_name) {
             let value = match *arg.value() {
@@ -62,7 +62,7 @@ impl Format for SelectFormat {
 mod tests {
     use icu::parse;
     use super::SelectFormat;
-    use {arg, Format};
+    use {arg, MessagePart};
 
     #[test]
     fn it_works() {

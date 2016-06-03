@@ -6,10 +6,10 @@
 
 //! ICU Message Format AST Support
 //!
-//! This module provides the various [`Format`] implementations
+//! This module provides the various [`MessagePart`] implementations
 //! for the ICU Message Format functionality.
 //!
-//! [`Format`]: ../../trait.Format.html
+//! [`MessagePart`]: ../../trait.MessagePart.html
 
 mod placeholder_format;
 mod plain_text;
