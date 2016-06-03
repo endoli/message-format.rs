@@ -13,14 +13,12 @@
 
 mod placeholder_format;
 mod plain_text;
-mod plural_classifiers;
 mod plural_format;
 mod select_format;
 mod simple_format;
 
 pub use self::placeholder_format::PlaceholderFormat;
 pub use self::plain_text::PlainText;
-pub use self::plural_classifiers::*;
-pub use self::plural_format::{PluralCategory, PluralFormat};
+pub use self::plural_format::PluralFormat;
 pub use self::select_format::SelectFormat;
 pub use self::simple_format::SimpleFormat;
