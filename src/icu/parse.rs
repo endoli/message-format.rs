@@ -34,26 +34,64 @@ impl fmt::Display for ParseError {
     }
 }
 
+/// Given a name, create a `SimpleFormat`.
+fn mk_simple(name: &str) -> Box<MessagePart> {
+    Box::new(ast::SimpleFormat::new(name))
+}
+
+/// This grabs the variable name from a format, which is
+/// the first thing after the '{' and extends to the first
+/// ',' or '}'.
+///
+/// '{name}' has a variable name of 'name'.
 named!(variable_name <&str, &str>, is_not_s!(",}"));
 
-named!(format <&str, Box<MessagePart> >,
+/// A simple format has only a name, delimited by braces.
+named!(simple_format <&str, Box<MessagePart> >,
+    map!(
+        delimited!(
+            tag_s!("{"),
+            variable_name,
+            tag_s!("}")),
+        mk_simple));
+
+named!(plural_format <&str, Box<MessagePart> >,
     delimited!(
         tag_s!("{"),
         chain!(
-            name: variable_name,
+            name: variable_name ~
+            tag_s!(",") ~
+            tag_s!("plural"),
             || Box::new(ast::SimpleFormat::new(name))),
         tag_s!("}")));
 
+named!(select_format <&str, Box<MessagePart> >,
+    delimited!(
+        tag_s!("{"),
+        chain!(
+            name: variable_name ~
+            tag_s!(",") ~
+            tag_s!("select"),
+            || Box::new(ast::SimpleFormat::new(name))),
+        tag_s!("}")));
+
+/// Plain text extends up through to the start of the next format
+/// block.
 named!(plain_text <&str, Box<MessagePart> >,
     map!(is_not_s!("{"), |text| Box::new(ast::PlainText::new(text))));
 
+/// Message parts must be 1 of the various part types. And there must
+/// be at least one of them for now.
 named!(message_parts <&str, Vec<Box<MessagePart> > >,
-    many0!(alt!(call!(format) | call!(plain_text))));
+    many1!(
+        alt!(call!(simple_format) |
+             call!(plural_format) |
+             call!(select_format) |
+             call!(plain_text))));
 
+/// Given a set of `MessagePart`s, create a `Message`.
 named!(pub message_parser <&str, Message>,
-    chain!(
-        parts: message_parts,
-        || Message::new(parts)));
+    map!(message_parts, Message::new));
 
 /// Parse some text and hopefully return a [`Message`].
 ///
@@ -95,6 +133,22 @@ mod tests {
     #[test]
     fn all_text_works() {
         match message_parser("Hello, world!") {
+            IResult::Done(_, _) => {}
+            _ => panic!("Expected successful parse."),
+        }
+    }
+
+    #[test]
+    fn plural_format_works() {
+        match message_parser("{count,plural}") {
+            IResult::Done(_, _) => {}
+            _ => panic!("Expected successful parse."),
+        }
+    }
+
+    #[test]
+    fn select_format_works() {
+        match message_parser("{type,select}") {
             IResult::Done(_, _) => {}
             _ => panic!("Expected successful parse."),
         }
