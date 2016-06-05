@@ -94,26 +94,6 @@ impl PluralFormat {
             }
         }
     }
-
-    /// Handle specialized behavior for `PlaceholderFormat` when formatting
-    /// a `PluralFormat`.
-    ///
-    /// XXX: Can we fold this away and do something more general for
-    /// `PlaceholderFormat`?
-    fn format_plural_message<'f>(&'f self,
-                                 context: &Context,
-                                 stream: &mut fmt::Write,
-                                 message: &'f Message,
-                                 _offset_value: i64,
-                                 args: &'f Args<'f>)
-                                 -> fmt::Result {
-        for part in &message.parts {
-            // XXX: Need to deal with PlaceholderFormat here and give it
-            // the `offset_value`.
-            try!(part.apply_format(context, stream, args));
-        }
-        Ok(())
-    }
 }
 
 impl MessagePart for PluralFormat {
@@ -129,7 +109,7 @@ impl MessagePart for PluralFormat {
             };
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
-            try!(self.format_plural_message(context, stream, message, offset_value, args));
+            try!(message.write_message(context, stream, args));
         }
         Ok(())
     }
