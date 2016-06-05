@@ -44,10 +44,7 @@ use {Args, Context, MessagePart};
 /// [`icu::parse`]: icu/fn.parse.html
 #[derive(Debug)]
 pub struct Message {
-    // This is pub due to icu::ast::PluralFormat. Once we address that, we
-    // can make this private again.
-    #[doc(hidden)]
-    pub parts: Vec<Box<MessagePart>>,
+    parts: Vec<Box<MessagePart>>,
 }
 
 impl Message {
