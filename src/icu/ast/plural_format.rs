@@ -109,7 +109,8 @@ impl MessagePart for PluralFormat {
             };
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
-            try!(message.write_message(context, stream, args));
+            let context = Context { placeholder_value: Some(offset_value), ..*context };
+            try!(message.write_message(&context, stream, args));
         }
         Ok(())
     }
