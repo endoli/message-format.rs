@@ -7,7 +7,7 @@
 use std::collections::HashMap;
 use std::fmt;
 
-use {Args, MessagePart, Message, Value};
+use {Args, Context, MessagePart, Message, Value};
 
 /// Using a value, select the appropriate message and format it.
 #[derive(Debug)]
@@ -43,7 +43,11 @@ impl SelectFormat {
 }
 
 impl MessagePart for SelectFormat {
-    fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
+    fn apply_format<'f>(&'f self,
+                        _context: &Context,
+                        stream: &mut fmt::Write,
+                        args: &'f Args<'f>)
+                        -> fmt::Result {
         if let Some(arg) = args.get(&self.variable_name) {
             let value = match *arg.value() {
                 Value::Str(str) => str,
@@ -62,19 +66,20 @@ impl MessagePart for SelectFormat {
 mod tests {
     use icu::parse;
     use super::SelectFormat;
-    use {arg, MessagePart};
+    use {arg, Context, MessagePart};
 
     #[test]
     fn it_works() {
+        let context = Context::new(None);
         let mut fmt = SelectFormat::new("type", parse("Default").unwrap());
         fmt.map("block", parse("Block").unwrap());
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("type", "block")).unwrap();
+        fmt.apply_format(&context, &mut output, &arg("type", "block")).unwrap();
         assert_eq!("Block", output);
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("type", "span")).unwrap();
+        fmt.apply_format(&context, &mut output, &arg("type", "span")).unwrap();
         assert_eq!("Default", output);
     }
 }

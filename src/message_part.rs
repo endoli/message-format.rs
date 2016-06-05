@@ -6,11 +6,15 @@
 
 use std::fmt;
 
-use Args;
+use {Args, Context};
 
 /// Part of a message. May be something that requires formatting a
 /// value or just plain text.
 pub trait MessagePart: fmt::Debug {
     /// Format this message part.
-    fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result;
+    fn apply_format<'f>(&'f self,
+                        context: &Context,
+                        stream: &mut fmt::Write,
+                        args: &'f Args<'f>)
+                        -> fmt::Result;
 }

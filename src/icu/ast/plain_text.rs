@@ -6,7 +6,7 @@
 
 use std::fmt;
 
-use {Args, MessagePart};
+use {Args, Context, MessagePart};
 
 /// A string that should be output. Used for the text in between
 /// formats.
@@ -24,7 +24,11 @@ impl PlainText {
 }
 
 impl MessagePart for PlainText {
-    fn apply_format(&self, stream: &mut fmt::Write, _args: &Args) -> fmt::Result {
+    fn apply_format(&self,
+                    _context: &Context,
+                    stream: &mut fmt::Write,
+                    _args: &Args)
+                    -> fmt::Result {
         try!(stream.write_str(self.text.as_str()));
         Ok(())
     }
@@ -33,13 +37,14 @@ impl MessagePart for PlainText {
 #[cfg(test)]
 mod tests {
     use super::PlainText;
-    use {arg, MessagePart};
+    use {arg, Context, MessagePart};
 
     #[test]
     fn it_works() {
         let fmt = PlainText::new("Test text.");
+        let context = Context::new(None);
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("John", "George")).unwrap();
+        fmt.apply_format(&context, &mut output, &arg("John", "George")).unwrap();
         assert_eq!("Test text.", output);
     }
 }

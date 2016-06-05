@@ -6,7 +6,7 @@
 
 use std::fmt;
 
-use {Args, MessagePart};
+use {Args, Context, MessagePart};
 
 /// A message that has been localized and can be formatted in a
 /// locale-aware manner.
@@ -61,8 +61,9 @@ impl Message {
 
     /// Write a message to a stream.
     pub fn write_message<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
+        let context = Context::new(None);
         for part in &self.parts {
-            try!(part.apply_format(stream, args));
+            try!(part.apply_format(&context, stream, args));
         }
         Ok(())
     }

@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use std::fmt;
 
 use english_cardinal_classifier;
-use {Args, Message, MessagePart, PluralCategory, Value};
+use {Args, Context, Message, MessagePart, PluralCategory, Value};
 
 /// Format a value taking pluralization rules into account.
 #[derive(Debug)]
@@ -101,6 +101,7 @@ impl PluralFormat {
     /// XXX: Can we fold this away and do something more general for
     /// `PlaceholderFormat`?
     fn format_plural_message<'f>(&'f self,
+                                 context: &Context,
                                  stream: &mut fmt::Write,
                                  message: &'f Message,
                                  _offset_value: i64,
@@ -109,14 +110,18 @@ impl PluralFormat {
         for part in &message.parts {
             // XXX: Need to deal with PlaceholderFormat here and give it
             // the `offset_value`.
-            try!(part.apply_format(stream, args));
+            try!(part.apply_format(context, stream, args));
         }
         Ok(())
     }
 }
 
 impl MessagePart for PluralFormat {
-    fn apply_format<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
+    fn apply_format<'f>(&'f self,
+                        context: &Context,
+                        stream: &mut fmt::Write,
+                        args: &'f Args<'f>)
+                        -> fmt::Result {
         if let Some(arg) = args.get(&self.variable_name) {
             let value = match *arg.value() {
                 Value::Number(n) => n,
@@ -124,7 +129,7 @@ impl MessagePart for PluralFormat {
             };
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
-            try!(self.format_plural_message(stream, message, offset_value, args));
+            try!(self.format_plural_message(context, stream, message, offset_value, args));
         }
         Ok(())
     }
@@ -134,23 +139,24 @@ impl MessagePart for PluralFormat {
 mod tests {
     use icu::parse;
     use super::PluralFormat;
-    use {arg, MessagePart};
+    use {arg, Context, MessagePart};
 
     #[test]
     fn it_works() {
+        let context = Context::new(None);
         let mut fmt = PluralFormat::new("count", parse("Other").unwrap());
         fmt.one(parse("One").unwrap());
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("count", 0)).unwrap();
+        fmt.apply_format(&context, &mut output, &arg("count", 0)).unwrap();
         assert_eq!("Other", output);
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("count", 1)).unwrap();
+        fmt.apply_format(&context, &mut output, &arg("count", 1)).unwrap();
         assert_eq!("One", output);
 
         let mut output = String::new();
-        fmt.apply_format(&mut output, &arg("count", 3)).unwrap();
+        fmt.apply_format(&context, &mut output, &arg("count", 3)).unwrap();
         assert_eq!("Other", output);
     }
 }
