@@ -31,8 +31,12 @@ use {Args, Context, MessagePart};
 /// use message_format::*;
 ///
 /// let m = icu::parse("{name} went to {place}.").unwrap();
+/// let context = Context::new(None);
 /// let mut output = String::new();
-/// m.write_message(&mut output, &arg("name", "Jacob").arg("place", "the store")).unwrap();
+/// m.write_message(&context,
+///                    &mut output,
+///                    &arg("name", "Jacob").arg("place", "the store"))
+///     .unwrap();
 /// assert_eq!(output, "Jacob went to the store.");
 /// ```
 ///
@@ -55,13 +59,17 @@ impl Message {
     /// Format a message, returning a string.
     pub fn format_message<'f>(&'f self, args: &'f Args<'f>) -> String {
         let mut output = String::new();
-        let _ = self.write_message(&mut output, args);
+        let context = Context::new(None);
+        let _ = self.write_message(&context, &mut output, args);
         output
     }
 
     /// Write a message to a stream.
-    pub fn write_message<'f>(&'f self, stream: &mut fmt::Write, args: &'f Args<'f>) -> fmt::Result {
-        let context = Context::new(None);
+    pub fn write_message<'f>(&'f self,
+                             context: &Context,
+                             stream: &mut fmt::Write,
+                             args: &'f Args<'f>)
+                             -> fmt::Result {
         for part in &self.parts {
             try!(part.apply_format(&context, stream, args));
         }

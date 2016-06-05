@@ -44,7 +44,7 @@ impl SelectFormat {
 
 impl MessagePart for SelectFormat {
     fn apply_format<'f>(&'f self,
-                        _context: &Context,
+                        context: &Context,
                         stream: &mut fmt::Write,
                         args: &'f Args<'f>)
                         -> fmt::Result {
@@ -54,7 +54,7 @@ impl MessagePart for SelectFormat {
                 _ => panic!("Wrong variable type."),
             };
             let message = self.lookup_message(value);
-            try!(message.write_message(stream, args));
+            try!(message.write_message(context, stream, args));
             Ok(())
         } else {
             Ok(())
