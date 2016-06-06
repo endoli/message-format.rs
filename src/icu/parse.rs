@@ -8,7 +8,7 @@ use std::error::Error;
 use std::fmt;
 use std::str;
 
-use nom::IResult;
+use nom::{IResult, multispace};
 
 use super::ast;
 use {Message, MessagePart};
@@ -60,8 +60,8 @@ named!(plural_format <&str, Box<MessagePart> >,
         tag_s!("{"),
         chain!(
             name: variable_name ~
-            tag_s!(",") ~
-            tag_s!("plural"),
+            tag_s!(",") ~ opt!(multispace) ~
+            tag_s!("plural") ~ opt!(multispace),
             || Box::new(ast::SimpleFormat::new(name))),
         tag_s!("}")));
 
@@ -70,8 +70,8 @@ named!(select_format <&str, Box<MessagePart> >,
         tag_s!("{"),
         chain!(
             name: variable_name ~
-            tag_s!(",") ~
-            tag_s!("select"),
+            tag_s!(",") ~ opt!(multispace) ~
+            tag_s!("select") ~ opt!(multispace),
             || Box::new(ast::SimpleFormat::new(name))),
         tag_s!("}")));
 
