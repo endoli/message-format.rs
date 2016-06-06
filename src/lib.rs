@@ -115,6 +115,7 @@
         unsafe_code, unstable_features,
         unused_import_braces, unused_qualifications)]
 
+extern crate language_tags;
 #[macro_use]
 extern crate nom;
 

@@ -10,4 +10,5 @@ homepage = "https://github.com/endoli/message-format.rs"
 repository = "https://github.com/endoli/message-format.rs"
 
 [dependencies]
+language-tags = "0.2.2"
 nom = "1.2.3"
