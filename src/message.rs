@@ -14,32 +14,6 @@ use {Args, Context, MessagePart};
 /// While a `Message` can be created directly from [`MessagePart`]
 /// components, it is easiest to create it from [`icu::parse`].
 ///
-/// A message can be formatted, returning a `String`:
-///
-/// ```
-/// use message_format::*;
-///
-/// let m = icu::parse("{name} went to {place}.").unwrap();
-/// assert_eq!(&m.format_message(&arg("name", "Jacob").arg("place", "the store")),
-///            "Jacob went to the store.");
-/// ```
-///
-/// It can also be written to a stream, but this is more cumbersome:
-///
-///
-/// ```
-/// use message_format::*;
-///
-/// let m = icu::parse("{name} went to {place}.").unwrap();
-/// let context = Context::default();
-/// let mut output = String::new();
-/// m.write_message(&context,
-///                    &mut output,
-///                    &arg("name", "Jacob").arg("place", "the store"))
-///     .unwrap();
-/// assert_eq!(output, "Jacob went to the store.");
-/// ```
-///
 /// [`MessagePart`]: trait.MessagePart.html
 /// [`icu::parse`]: icu/fn.parse.html
 #[derive(Debug)]
@@ -53,15 +27,10 @@ impl Message {
         Message { parts: parts }
     }
 
-    /// Format a message, returning a string.
-    pub fn format_message<'f>(&'f self, args: &'f Args<'f>) -> String {
-        let mut output = String::new();
-        let context = Context::default();
-        let _ = self.write_message(&context, &mut output, args);
-        output
-    }
-
     /// Write a message to a stream.
+    ///
+    /// This shouldn't be called directly in the usual case.
+    /// Use `Context::write` or `Context::format` instead.
     pub fn write_message<'f>(&'f self,
                              context: &Context,
                              stream: &mut fmt::Write,

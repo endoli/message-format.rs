@@ -107,14 +107,15 @@ pub fn parse(message: &str) -> Result<Message, ParseError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use arg;
+    use {arg, Context};
     use nom::IResult;
 
     #[test]
     fn it_works() {
+        let ctx = Context::default();
         match parse("{name} is from {city}.") {
             Ok(m) => {
-                assert_eq!(m.format_message(&arg("name", "Hendrik").arg("city", "Berlin")),
+                assert_eq!(ctx.format(&m, &arg("name", "Hendrik").arg("city", "Berlin")),
                            "Hendrik is from Berlin.");
             }
             Err(e) => panic!("Parse failed: {}", e),
