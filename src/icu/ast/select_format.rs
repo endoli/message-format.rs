@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let context = Context::new(None);
+        let context = Context::default();
         let mut fmt = SelectFormat::new("type", parse("Default").unwrap());
         fmt.map("block", parse("Block").unwrap());
 

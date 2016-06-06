@@ -31,7 +31,7 @@ use {Args, Context, MessagePart};
 /// use message_format::*;
 ///
 /// let m = icu::parse("{name} went to {place}.").unwrap();
-/// let context = Context::new(None);
+/// let context = Context::default();
 /// let mut output = String::new();
 /// m.write_message(&context,
 ///                    &mut output,
@@ -56,7 +56,7 @@ impl Message {
     /// Format a message, returning a string.
     pub fn format_message<'f>(&'f self, args: &'f Args<'f>) -> String {
         let mut output = String::new();
-        let context = Context::new(None);
+        let context = Context::default();
         let _ = self.write_message(&context, &mut output, args);
         output
     }

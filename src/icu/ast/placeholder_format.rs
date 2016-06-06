@@ -42,7 +42,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let context = Context::new(Some(3));
+        let context = Context { placeholder_value: Some(3), ..Context::default() };
         let fmt = PlaceholderFormat::new();
 
         let mut output = String::new();

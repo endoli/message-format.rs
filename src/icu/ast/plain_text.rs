@@ -42,7 +42,7 @@ mod tests {
     #[test]
     fn it_works() {
         let fmt = PlainText::new("Test text.");
-        let context = Context::new(None);
+        let context = Context::default();
         let mut output = String::new();
         fmt.apply_format(&context, &mut output, &arg("John", "George")).unwrap();
         assert_eq!("Test text.", output);

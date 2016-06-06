@@ -105,7 +105,7 @@ impl MessagePart for PluralFormat {
         if let Some(&Value::Number(value)) = args.get(&self.variable_name).map(|a| a.value()) {
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
-            let context = Context { placeholder_value: Some(offset_value), ..*context };
+            let context = Context { placeholder_value: Some(offset_value), ..context.clone() };
             try!(message.write_message(&context, stream, args));
             Ok(())
         } else {
@@ -122,7 +122,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let context = Context::new(None);
+        let context = Context::default();
         let mut fmt = PluralFormat::new("count", parse("Other").unwrap());
         fmt.one(parse("One").unwrap());
 

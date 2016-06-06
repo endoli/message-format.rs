@@ -45,7 +45,7 @@ mod tests {
     #[test]
     fn it_works() {
         let fmt = SimpleFormat::new("name");
-        let context = Context::new(None);
+        let context = Context::default();
         let mut output = String::new();
         fmt.apply_format(&context, &mut output, &arg("name", "John")).unwrap();
         assert_eq!("John", output);
