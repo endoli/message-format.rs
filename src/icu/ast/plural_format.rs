@@ -102,11 +102,7 @@ impl MessagePart for PluralFormat {
                         stream: &mut fmt::Write,
                         args: &'f Args<'f>)
                         -> fmt::Result {
-        if let Some(arg) = args.get(&self.variable_name) {
-            let value = match *arg.value() {
-                Value::Number(n) => n,
-                _ => panic!("Wrong variable type."),
-            };
+        if let Some(&Value::Number(value)) = args.get(&self.variable_name).map(|a| a.value()) {
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
             let context = Context { placeholder_value: Some(offset_value), ..*context };

@@ -48,11 +48,7 @@ impl MessagePart for SelectFormat {
                         stream: &mut fmt::Write,
                         args: &'f Args<'f>)
                         -> fmt::Result {
-        if let Some(arg) = args.get(&self.variable_name) {
-            let value = match *arg.value() {
-                Value::Str(str) => str,
-                _ => panic!("Wrong variable type."),
-            };
+        if let Some(&Value::Str(value)) = args.get(&self.variable_name).map(|a| a.value()) {
             let message = self.lookup_message(value);
             try!(message.write_message(context, stream, args));
             Ok(())
