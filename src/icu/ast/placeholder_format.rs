@@ -22,10 +22,31 @@ impl PlaceholderFormat {
 
 impl MessagePart for PlaceholderFormat {
     fn apply_format(&self,
-                    _context: &Context,
-                    _stream: &mut fmt::Write,
+                    context: &Context,
+                    stream: &mut fmt::Write,
                     _args: &Args)
                     -> fmt::Result {
-        unimplemented!();
+        if let Some(value) = context.placeholder_value {
+            try!(write!(stream, "{}", value));
+            Ok(())
+        } else {
+            Err(fmt::Error {})
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::PlaceholderFormat;
+    use {arg, Context, MessagePart};
+
+    #[test]
+    fn it_works() {
+        let context = Context::new(Some(3));
+        let fmt = PlaceholderFormat::new();
+
+        let mut output = String::new();
+        fmt.apply_format(&context, &mut output, &arg("count", 0)).unwrap();
+        assert_eq!("3", output);
     }
 }
