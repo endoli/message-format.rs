@@ -27,7 +27,9 @@ message-format = "0.0.1"
 Things are under active development. This project is not quite
 usable yet as some of the basic functionality is being written.
 
+## Contribution
 
-## Contributions
-
-Contributions are welcome.
+Unless you explicitly state otherwise, any contribution
+intentionally submitted for inclusion in the work by you,
+as defined in the Apache-2.0 license, shall be dual licensed
+as above, without any additional terms or conditions.
