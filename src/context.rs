@@ -5,6 +5,9 @@
 // except according to those terms.
 
 use language_tags::LanguageTag;
+use std::fmt;
+
+use {Args, Message};
 
 /// Contextual configuration data.
 #[derive(Clone)]
@@ -22,6 +25,22 @@ impl Context {
             language_tag: language,
             placeholder_value: placeholder_value,
         }
+    }
+
+    /// Format a message, returning a string.
+    pub fn format<'f>(&self, message: &'f Message, args: &'f Args<'f>) -> String {
+        let mut output = String::new();
+        let _ = message.write_message(self, &mut output, args);
+        output
+    }
+
+    /// Write a message to a stream.
+    pub fn write<'f>(&self,
+                     message: &'f Message,
+                     stream: &mut fmt::Write,
+                     args: &'f Args<'f>)
+                     -> fmt::Result {
+        message.write_message(self, stream, args)
     }
 }
 
