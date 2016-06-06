@@ -32,8 +32,7 @@ impl MessagePart for SimpleFormat {
             try!(write!(stream, "{}", arg.value()));
             Ok(())
         } else {
-            // XXX: Should we return an error in this case?
-            Ok(())
+            Err(fmt::Error {})
         }
     }
 }

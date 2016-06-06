@@ -57,7 +57,7 @@ impl MessagePart for SelectFormat {
             try!(message.write_message(context, stream, args));
             Ok(())
         } else {
-            Ok(())
+            Err(fmt::Error {})
         }
     }
 }

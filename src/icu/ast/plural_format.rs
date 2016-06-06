@@ -111,8 +111,10 @@ impl MessagePart for PluralFormat {
             let message = self.lookup_message(offset_value);
             let context = Context { placeholder_value: Some(offset_value), ..*context };
             try!(message.write_message(&context, stream, args));
+            Ok(())
+        } else {
+            Err(fmt::Error {})
         }
-        Ok(())
     }
 }
 
