@@ -24,11 +24,7 @@ impl PlainText {
 }
 
 impl MessagePart for PlainText {
-    fn apply_format(&self,
-                    _context: &Context,
-                    stream: &mut fmt::Write,
-                    _args: &Args)
-                    -> fmt::Result {
+    fn apply_format(&self, _ctx: &Context, stream: &mut fmt::Write, _args: &Args) -> fmt::Result {
         try!(stream.write_str(self.text.as_str()));
         Ok(())
     }
@@ -42,9 +38,9 @@ mod tests {
     #[test]
     fn it_works() {
         let fmt = PlainText::new("Test text.");
-        let context = Context::default();
+        let ctx = Context::default();
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("John", "George")).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("John", "George")).unwrap();
         assert_eq!("Test text.", output);
     }
 }

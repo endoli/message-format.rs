@@ -44,13 +44,13 @@ impl SelectFormat {
 
 impl MessagePart for SelectFormat {
     fn apply_format<'f>(&'f self,
-                        context: &Context,
+                        ctx: &Context,
                         stream: &mut fmt::Write,
                         args: &'f Args<'f>)
                         -> fmt::Result {
         if let Some(&Value::Str(value)) = args.get(&self.variable_name).map(|a| a.value()) {
             let message = self.lookup_message(value);
-            try!(message.write_message(context, stream, args));
+            try!(message.write_message(ctx, stream, args));
             Ok(())
         } else {
             Err(fmt::Error {})
@@ -66,16 +66,16 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let context = Context::default();
+        let ctx = Context::default();
         let mut fmt = SelectFormat::new("type", parse("Default").unwrap());
         fmt.map("block", parse("Block").unwrap());
 
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("type", "block")).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("type", "block")).unwrap();
         assert_eq!("Block", output);
 
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("type", "span")).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("type", "span")).unwrap();
         assert_eq!("Default", output);
     }
 }

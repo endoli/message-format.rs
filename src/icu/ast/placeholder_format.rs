@@ -21,12 +21,8 @@ impl PlaceholderFormat {
 }
 
 impl MessagePart for PlaceholderFormat {
-    fn apply_format(&self,
-                    context: &Context,
-                    stream: &mut fmt::Write,
-                    _args: &Args)
-                    -> fmt::Result {
-        if let Some(value) = context.placeholder_value {
+    fn apply_format(&self, ctx: &Context, stream: &mut fmt::Write, _args: &Args) -> fmt::Result {
+        if let Some(value) = ctx.placeholder_value {
             try!(write!(stream, "{}", value));
             Ok(())
         } else {
@@ -42,11 +38,11 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let context = Context { placeholder_value: Some(3), ..Context::default() };
+        let ctx = Context { placeholder_value: Some(3), ..Context::default() };
         let fmt = PlaceholderFormat::new();
 
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("count", 0)).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("count", 0)).unwrap();
         assert_eq!("3", output);
     }
 }

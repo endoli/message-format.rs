@@ -98,15 +98,15 @@ impl PluralFormat {
 
 impl MessagePart for PluralFormat {
     fn apply_format<'f>(&'f self,
-                        context: &Context,
+                        ctx: &Context,
                         stream: &mut fmt::Write,
                         args: &'f Args<'f>)
                         -> fmt::Result {
         if let Some(&Value::Number(value)) = args.get(&self.variable_name).map(|a| a.value()) {
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
-            let context = Context { placeholder_value: Some(offset_value), ..context.clone() };
-            try!(message.write_message(&context, stream, args));
+            let ctx = Context { placeholder_value: Some(offset_value), ..ctx.clone() };
+            try!(message.write_message(&ctx, stream, args));
             Ok(())
         } else {
             Err(fmt::Error {})
@@ -122,20 +122,20 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let context = Context::default();
+        let ctx = Context::default();
         let mut fmt = PluralFormat::new("count", parse("Other").unwrap());
         fmt.one(parse("One").unwrap());
 
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("count", 0)).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("count", 0)).unwrap();
         assert_eq!("Other", output);
 
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("count", 1)).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("count", 1)).unwrap();
         assert_eq!("One", output);
 
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("count", 3)).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("count", 3)).unwrap();
         assert_eq!("Other", output);
     }
 }

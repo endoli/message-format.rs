@@ -24,7 +24,7 @@ impl SimpleFormat {
 
 impl MessagePart for SimpleFormat {
     fn apply_format<'f>(&'f self,
-                        _context: &Context,
+                        _ctx: &Context,
                         stream: &mut fmt::Write,
                         args: &'f Args<'f>)
                         -> fmt::Result {
@@ -45,9 +45,9 @@ mod tests {
     #[test]
     fn it_works() {
         let fmt = SimpleFormat::new("name");
-        let context = Context::default();
+        let ctx = Context::default();
         let mut output = String::new();
-        fmt.apply_format(&context, &mut output, &arg("name", "John")).unwrap();
+        fmt.apply_format(&ctx, &mut output, &arg("name", "John")).unwrap();
         assert_eq!("John", output);
     }
 }

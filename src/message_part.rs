@@ -13,7 +13,7 @@ use {Args, Context};
 pub trait MessagePart: fmt::Debug {
     /// Format this message part.
     fn apply_format<'f>(&'f self,
-                        context: &Context,
+                        ctx: &Context,
                         stream: &mut fmt::Write,
                         args: &'f Args<'f>)
                         -> fmt::Result;
