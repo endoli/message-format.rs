@@ -1,3 +1,7 @@
+#![allow(missing_docs)]
+
+use std::str;
+
 pub enum Expression {
     IdentifierExpression {
         name: String,
@@ -32,7 +36,7 @@ pub struct Identifier {
 }
 
 pub struct Parser<'a> {
-    source: std::str::Chars<'a>,
+    source: str::Chars<'a>,
     ch: Option<char>,
     pos: u16,
 }

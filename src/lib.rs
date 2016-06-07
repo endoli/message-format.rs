@@ -125,6 +125,7 @@ extern crate language_tags;
 extern crate nom;
 
 pub mod icu;
+pub mod l20n;
 mod args;
 mod context;
 mod message;
