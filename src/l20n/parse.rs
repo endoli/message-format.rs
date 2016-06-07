@@ -222,3 +222,38 @@ impl<'a> Parser<'a> {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn expected_parse(name: &str, text: &str) {
+        let mut p = Parser::new(text);
+        match p.parse() {
+            Err(e) => panic!("Parse failed: {}: {}", name, e),
+            _ => {}
+        }
+    }
+
+    fn expected_failure(name: &str, text: &str) {
+        let mut p = Parser::new(text);
+        match p.parse() {
+            Ok(_) => panic!("Parse unexpectedly worked: {}", name),
+            _ => {}
+        }
+    }
+
+    #[test]
+    fn it_works() {
+        expected_parse("simple", "a = b");
+        expected_parse("simple", "a=b");
+        expected_parse("simple", "a   =     b");
+        expected_parse("multiline",
+                       "multi =\n\
+                        | abc\n\
+                       ");
+        expected_failure("comment", "#comment");
+        expected_failure("comment", "# comment");
+        expected_failure("comment", "#  comment");
+    }
+}
