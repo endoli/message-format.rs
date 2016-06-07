@@ -6,9 +6,12 @@
 
 #![allow(missing_docs)]
 
+use std::error::Error;
+use std::fmt;
 use std::str;
 use super::ast::*;
 
+#[derive(Debug)]
 pub struct ParseError {
     pub error_message: String,
 }
@@ -18,6 +21,19 @@ impl ParseError {
         ParseError { error_message: String::from(error_message) }
     }
 }
+
+impl Error for ParseError {
+    fn description(&self) -> &str {
+        &self.error_message
+    }
+}
+
+impl fmt::Display for ParseError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        self.description().fmt(f)
+    }
+}
+
 
 pub struct Parser<'a> {
     source: str::Chars<'a>,
