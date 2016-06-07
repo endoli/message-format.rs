@@ -6,12 +6,14 @@
 
 #![allow(missing_docs)]
 
+#[derive(Debug)]
 pub enum Expression {
     IdentifierExpression {
         name: String,
     },
 }
 
+#[derive(Debug)]
 pub enum PatternElement {
     TextElement {
         value: String,
@@ -21,6 +23,7 @@ pub enum PatternElement {
     },
 }
 
+#[derive(Debug)]
 pub enum Value {
     Pattern {
         source: String,
@@ -28,6 +31,7 @@ pub enum Value {
     },
 }
 
+#[derive(Debug)]
 pub enum Entry {
     Entity {
         id: Identifier,
@@ -35,6 +39,7 @@ pub enum Entry {
     },
 }
 
+#[derive(Debug)]
 pub struct Identifier {
     pub name: String,
 }
