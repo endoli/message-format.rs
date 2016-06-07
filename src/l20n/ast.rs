@@ -35,6 +35,7 @@ pub enum Value {
 pub enum Entry {
     Entity {
         id: Identifier,
+        comment: Option<Comment>,
         value: Value,
     },
 }
@@ -42,4 +43,9 @@ pub enum Entry {
 #[derive(Debug)]
 pub struct Identifier {
     pub name: String,
+}
+
+#[derive(Debug)]
+pub struct Comment {
+    pub content: String,
 }

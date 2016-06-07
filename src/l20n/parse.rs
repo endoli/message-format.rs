@@ -84,7 +84,8 @@ impl<'a> Parser<'a> {
                 break;
             }
 
-            match self.get_entry() {
+            let comment = None;
+            match self.get_entry(comment) {
                 Ok(entry) => entries.push(entry),
                 Err(err) => return Err(err),
             }
@@ -93,11 +94,11 @@ impl<'a> Parser<'a> {
         Ok(entries)
     }
 
-    fn get_entry(&mut self) -> Result<Entry, ParseError> {
-        self.get_entity()
+    fn get_entry(&mut self, comment: Option<Comment>) -> Result<Entry, ParseError> {
+        self.get_entity(comment)
     }
 
-    fn get_entity(&mut self) -> Result<Entry, ParseError> {
+    fn get_entity(&mut self, comment: Option<Comment>) -> Result<Entry, ParseError> {
         let id = try!(self.get_identifier());
         self.get_line_ws();
 
@@ -112,6 +113,7 @@ impl<'a> Parser<'a> {
             Ok(value) => {
                 Ok(Entry::Entity {
                     id: id,
+                    comment: comment,
                     value: value,
                 })
             }
