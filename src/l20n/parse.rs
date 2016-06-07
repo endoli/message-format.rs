@@ -11,6 +11,11 @@ use std::fmt;
 use std::str;
 use super::ast::*;
 
+pub fn parse(source: &str) -> Result<Vec<Entry>, ParseError> {
+    let mut p = Parser::new(source);
+    p.parse()
+}
+
 #[derive(Debug)]
 pub struct ParseError {
     pub error_message: String,
@@ -35,14 +40,14 @@ impl fmt::Display for ParseError {
 }
 
 
-pub struct Parser<'a> {
+struct Parser<'a> {
     source: str::Chars<'a>,
     ch: Option<char>,
     pos: u16,
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(source: &'a str) -> Parser<'a> {
+    fn new(source: &'a str) -> Parser<'a> {
         Parser {
             source: source.chars(),
             ch: None,
@@ -72,7 +77,7 @@ impl<'a> Parser<'a> {
         }
     }
 
-    pub fn parse(&mut self) -> Result<Vec<Entry>, ParseError> {
+    fn parse(&mut self) -> Result<Vec<Entry>, ParseError> {
         let mut entries: Vec<Entry> = Vec::new();
 
         self.get_ws();
@@ -229,17 +234,15 @@ impl<'a> Parser<'a> {
 mod tests {
     use super::*;
 
-    fn expected_parse(name: &str, text: &str) {
-        let mut p = Parser::new(text);
-        match p.parse() {
+    fn expected_parse(name: &str, source: &str) {
+        match parse(source) {
             Err(e) => panic!("Parse failed: {}: {}", name, e),
             _ => {}
         }
     }
 
-    fn expected_failure(name: &str, text: &str) {
-        let mut p = Parser::new(text);
-        match p.parse() {
+    fn expected_failure(name: &str, source: &str) {
+        match parse(source) {
             Ok(_) => panic!("Parse unexpectedly worked: {}", name),
             _ => {}
         }
