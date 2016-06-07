@@ -9,6 +9,16 @@
 use std::str;
 use super::ast::*;
 
+pub struct ParseError {
+    pub error_message: String,
+}
+
+impl ParseError {
+    pub fn new(error_message: &str) -> Self {
+        ParseError { error_message: String::from(error_message) }
+    }
+}
+
 pub struct Parser<'a> {
     source: str::Chars<'a>,
     ch: Option<char>,
@@ -46,7 +56,7 @@ impl<'a> Parser<'a> {
         }
     }
 
-    pub fn parse(&mut self) -> Vec<Entry> {
+    pub fn parse(&mut self) -> Result<Vec<Entry>, ParseError> {
         let mut entries: Vec<Entry> = Vec::new();
 
         self.get_ws();
@@ -58,48 +68,52 @@ impl<'a> Parser<'a> {
                 break;
             }
 
-            entries.push(self.get_entry());
+            match self.get_entry() {
+                Ok(entry) => entries.push(entry),
+                Err(err) => return Err(err),
+            }
             self.get_ws();
         }
-        entries
+        Ok(entries)
     }
 
-    fn get_entry(&mut self) -> Entry {
-        let val = self.get_entity();
-
-        val
+    fn get_entry(&mut self) -> Result<Entry, ParseError> {
+        self.get_entity()
     }
 
-    fn get_entity(&mut self) -> Entry {
-        let id = self.get_identifier();
+    fn get_entity(&mut self) -> Result<Entry, ParseError> {
+        let id = try!(self.get_identifier());
         self.get_line_ws();
 
         if !self.ch_is('=') {
-            panic!();
+            return Err(ParseError::new("Expected '='"));
         }
         self.bump();
 
         self.get_line_ws();
 
-        let value = self.get_pattern();
-
-        Entry::Entity {
-            id: id,
-            value: value,
+        match self.get_pattern() {
+            Ok(value) => {
+                Ok(Entry::Entity {
+                    id: id,
+                    value: value,
+                })
+            }
+            Err(err) => Err(err),
         }
     }
 
-    fn get_identifier(&mut self) -> Identifier {
+    fn get_identifier(&mut self) -> Result<Identifier, ParseError> {
         let mut name = String::new();
 
         let ch = match self.ch {
             Some(c) => c,
-            None => panic!(),
+            None => return Err(ParseError::new("Unexpected end of input.")),
         };
 
         match ch {
             'a'...'z' | 'A'...'Z' | '_' => name.push(ch),
-            _ => return Identifier { name: name },
+            _ => return Ok(Identifier { name: name }),
         }
         self.bump();
 
@@ -116,10 +130,10 @@ impl<'a> Parser<'a> {
             self.bump();
         }
 
-        Identifier { name: name }
+        Ok(Identifier { name: name })
     }
 
-    fn get_pattern(&mut self) -> Value {
+    fn get_pattern(&mut self) -> Result<Value, ParseError> {
         let mut buffer = String::new();
         let mut source = String::new();
         let mut content = vec![];
@@ -134,7 +148,7 @@ impl<'a> Parser<'a> {
             match self.ch {
                 Some(c) if c == '\n' => {
                     if quote_delimited {
-                        panic!("Unclosed string");
+                        return Err(ParseError::new("Unclosed string"));
                     }
                     self.bump();
                     self.get_line_ws();
@@ -143,7 +157,8 @@ impl<'a> Parser<'a> {
                         break;
                     }
                     if first_line && buffer.len() != 0 {
-                        panic!("Multiline string should have the ID line empty");
+                        return Err(ParseError::new("Multiline string should have the ID line \
+                                                    empty"));
                     }
                     first_line = false;
                     self.bump();
@@ -171,7 +186,7 @@ impl<'a> Parser<'a> {
         }
 
         if quote_delimited {
-            panic!("Unclosed string");
+            return Err(ParseError::new("Unclosed string"));
         }
 
         if buffer.len() != 0 {
@@ -185,9 +200,9 @@ impl<'a> Parser<'a> {
 
         content.push(PatternElement::TextElement { value: source.clone() });
 
-        Value::Pattern {
+        Ok(Value::Pattern {
             source: source,
             elements: content,
-        }
+        })
     }
 }
