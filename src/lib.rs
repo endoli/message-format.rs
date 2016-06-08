@@ -44,14 +44,29 @@
 //! [dependencies]
 //! message-format = "0.0.1"
 //! ```
+//!
+//! This library depends upon some macros being used, so at the top of your crate,
+//! you will want to make sure that macros from this crate are used:
+//!
+//! ```
+//! #[macro_use]
+//! extern crate message_format;
+//! # fn main() {}
+//! ```
+//!
 //! ## Contexts
 //!
+//! The context stores information that is shared between all of the formats
+//! that are formatted using that context. (You might want to have multiple
+//! contexts, or you might not.)
 //!
+//! For now, this stores the locale that is being used, but in the future,
+//! it will be used for additional features.
 //!
-//! ## Messages
+//! ## ICU Formatted Messages
 //!
-//! The simplest way to create a [`Message`] from code is to [`parse`] it
-//! from a text format:
+//! The simplest way to create an ICU formatted [`Message`] from code is
+//! to [`parse`] it from a text format:
 //!
 //! ```
 //! use message_format::*;
@@ -61,32 +76,39 @@
 //!
 //! For details on the [ICU Message Format] syntax, see the [`icu` module].
 //!
-//! ## Arguments
+//! ## L20n Formatted Messages
+//!
+//! Support for the [L20n] localization format is under development.
+//!
+//! ## Formatting a Message
 //!
 //! Messages need arguments or parameters. Since messages typically have named
 //! arguments, we can't just pass arguments directly like we might do with
-//! `format!` or other lower level formatting operations. Instead, we construct
-//! a set of [`Args`]:
+//! `format!` or other lower level formatting operations. Instead, we have
+//! our own macros.
+//!
+//! Arguments can be specified as `name => value` or, if you have a variable
+//! with the same name as the argument already, then as just `name`.
 //!
 //! ```
+//! #[macro_use]
+//! extern crate message_format;
+//!
 //! use message_format::*;
 //!
-//! let ctx = Context::default();
-//! let m = icu::parse("Connecting to {host}...").unwrap();
-//! assert_eq!(ctx.format(&m, Some(&arg("host", "localhost"))),
-//!            "Connecting to localhost...");
+//! fn main() {
+//!     let ctx = Context::default();
+//!     let m1 = icu::parse("Connecting to {host}...").unwrap();
+//!     assert_eq!(format_message!(ctx, &m1, host => "localhost"),
+//!                "Connecting to localhost...");
+//!
+//!     let m2 = icu::parse("{name} went to {place}.").unwrap();
+//!     let name = "Jacob";
+//!     assert_eq!(format_message!(ctx, &m2, name, place => "the store"),
+//!                "Jacob went to the store.");
+//! }
 //! ```
 //!
-//! Multiple arguments can be provided by chaining together calls to `arg`:
-//!
-//! ```
-//! use message_format::*;
-//!
-//! let ctx = Context::default();
-//! let m = icu::parse("{name} went to {place}.").unwrap();
-//! assert_eq!(ctx.format(&m, Some(&arg("name", "Jacob").arg("place", "the store"))),
-//!            "Jacob went to the store.");
-//! ```
 //! ## Future Directions
 //!
 //! In the future, we want to extend this library to support a number of
@@ -98,8 +120,7 @@
 //!   specific formatting.
 //! * Extending the types of data that can be used with [`Value`].
 //! * Supporting [L20n] and perhaps other message format syntaxes. (This
-//!   will probably require API changes to support the concept of a
-//!   context among other things.)
+//!   will probably require API changes.)
 //! * Offline utilities for compiling and validating message format
 //!   strings, converting to and from various formats like XLIFF, etc.
 //!
@@ -107,7 +128,6 @@
 //!
 //! Contributions are welcome.
 //!
-//! [`Args`]: struct.Args.html
 //! [ICU Message Format]: icu/index.html
 //! [`icu` module]: icu/index.html
 //! [L20n]: http://l20n.org/
