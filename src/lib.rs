@@ -128,6 +128,7 @@ pub mod icu;
 pub mod l20n;
 mod args;
 mod context;
+mod macros;
 mod message;
 mod message_part;
 mod plural_category;
