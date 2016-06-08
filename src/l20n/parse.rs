@@ -140,12 +140,7 @@ impl<'a> Parser<'a> {
         }
         self.bump();
 
-        loop {
-            let ch = match self.ch {
-                Some(c) => c,
-                None => break,
-            };
-
+        while let Some(ch) = self.ch {
             match ch {
                 'a'...'z' | 'A'...'Z' | '0'...'9' | '_' | '-' => name.push(ch),
                 _ => break,
@@ -179,7 +174,7 @@ impl<'a> Parser<'a> {
                     if !self.ch_is('|') {
                         break;
                     }
-                    if first_line && buffer.len() != 0 {
+                    if first_line && !buffer.is_empty() {
                         return Err(ParseError::new("Multiline string should have the ID line \
                                                     empty"));
                     }
@@ -188,7 +183,7 @@ impl<'a> Parser<'a> {
                     if self.ch_is(' ') {
                         self.bump();
                     }
-                    if buffer.len() != 0 {
+                    if !buffer.is_empty() {
                         buffer.push('\n');
                     }
                     continue;
@@ -212,12 +207,12 @@ impl<'a> Parser<'a> {
             return Err(ParseError::new("Unclosed string"));
         }
 
-        if buffer.len() != 0 {
+        if !buffer.is_empty() {
             // source.append(buffer);
             content.push(PatternElement::TextElement { value: source.clone() });
         }
 
-        if content.len() == 0 {
+        if content.is_empty() {
             // return Value::Pattern(source: source, elements: content);
         }
 
