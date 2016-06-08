@@ -48,8 +48,8 @@ impl MessagePart for SelectFormat {
                         stream: &mut fmt::Write,
                         args: Option<&Args<'f>>)
                         -> fmt::Result {
-        if let Some(Some(&Value::Str(value))) =
-               args.map(|a| a.get(&self.variable_name).map(|a| a.value())) {
+        let arg = args.and_then(|args| args.get(&self.variable_name));
+        if let Some(&Value::Str(value)) = arg.map(|a| a.value()) {
             let message = self.lookup_message(value);
             try!(message.write_message(ctx, stream, args));
             Ok(())

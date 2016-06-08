@@ -102,8 +102,8 @@ impl MessagePart for PluralFormat {
                         stream: &mut fmt::Write,
                         args: Option<&Args<'f>>)
                         -> fmt::Result {
-        if let Some(Some(&Value::Number(value))) =
-               args.map(|a| a.get(&self.variable_name).map(|a| a.value())) {
+        let arg = args.and_then(|args| args.get(&self.variable_name));
+        if let Some(&Value::Number(value)) = arg.map(|a| a.value()) {
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
             let ctx = Context { placeholder_value: Some(offset_value), ..ctx.clone() };

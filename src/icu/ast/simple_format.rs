@@ -28,7 +28,7 @@ impl MessagePart for SimpleFormat {
                         stream: &mut fmt::Write,
                         args: Option<&Args<'f>>)
                         -> fmt::Result {
-        if let Some(Some(arg)) = args.map(|a| a.get(self.variable_name.as_str())) {
+        if let Some(arg) = args.and_then(|args| args.get(&self.variable_name)) {
             try!(write!(stream, "{}", arg.value()));
             Ok(())
         } else {
