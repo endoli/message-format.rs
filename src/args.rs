@@ -15,9 +15,14 @@ use super::{AsValue, Value};
 ///
 /// [`Message`]: struct.Message.html
 pub struct Args<'a> {
-    name: &'a str,
-    value: Value<'a>,
-    prev: Option<&'a Args<'a>>,
+    /// The name of the argument which must match the usage within
+    /// the message text.
+    pub name: &'a str,
+    /// The value of the argument.
+    pub value: Value<'a>,
+    /// The 'next' argument (which is really the previous since this
+    /// is a linked list with the last argument first).
+    pub prev: Option<&'a Args<'a>>,
 }
 
 /// Create an argument holder.
