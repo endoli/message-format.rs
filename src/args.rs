@@ -27,6 +27,9 @@ pub struct Args<'a> {
 
 /// Create an argument holder.
 ///
+/// This isn't commonly used as arguments are usually set up via the
+/// `format_message!` or `write_message!` macros.
+///
 /// ```
 /// use message_format::arg;
 ///
@@ -45,6 +48,9 @@ impl<'a> Args<'a> {
     /// Add an additional argument. This returns a new value which maintains a link
     /// to the old value. You must maintain a reference to the return value for it to
     /// remain valid.
+    ///
+    /// This isn't commonly used as arguments are usually set up via the
+    /// `format_message!` or `write_message!` macros.
     ///
     /// ```
     /// use message_format::arg;
