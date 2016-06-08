@@ -23,10 +23,10 @@ impl SimpleFormat {
 }
 
 impl MessagePart for SimpleFormat {
-    fn apply_format<'f>(&'f self,
+    fn apply_format<'f>(&self,
                         _ctx: &Context,
                         stream: &mut fmt::Write,
-                        args: &'f Args<'f>)
+                        args: &Args<'f>)
                         -> fmt::Result {
         if let Some(arg) = args.get(self.variable_name.as_str()) {
             try!(write!(stream, "{}", arg.value()));

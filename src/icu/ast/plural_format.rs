@@ -97,10 +97,10 @@ impl PluralFormat {
 }
 
 impl MessagePart for PluralFormat {
-    fn apply_format<'f>(&'f self,
+    fn apply_format<'f>(&self,
                         ctx: &Context,
                         stream: &mut fmt::Write,
-                        args: &'f Args<'f>)
+                        args: &Args<'f>)
                         -> fmt::Result {
         if let Some(&Value::Number(value)) = args.get(&self.variable_name).map(|a| a.value()) {
             let offset_value = value - self.offset;

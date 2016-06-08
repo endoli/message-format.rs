@@ -12,9 +12,9 @@ use {Args, Context};
 /// value or just plain text.
 pub trait MessagePart: fmt::Debug {
     /// Format this message part.
-    fn apply_format<'f>(&'f self,
+    fn apply_format<'f>(&self,
                         ctx: &Context,
                         stream: &mut fmt::Write,
-                        args: &'f Args<'f>)
+                        args: &Args<'f>)
                         -> fmt::Result;
 }

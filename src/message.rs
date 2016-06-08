@@ -31,10 +31,10 @@ impl Message {
     ///
     /// This shouldn't be called directly in the usual case.
     /// Use `Context::write` or `Context::format` instead.
-    pub fn write_message<'f>(&'f self,
+    pub fn write_message<'f>(&self,
                              ctx: &Context,
                              stream: &mut fmt::Write,
-                             args: &'f Args<'f>)
+                             args: &Args<'f>)
                              -> fmt::Result {
         for part in &self.parts {
             try!(part.apply_format(&ctx, stream, args));
