@@ -26,9 +26,9 @@ impl MessagePart for SimpleFormat {
     fn apply_format<'f>(&self,
                         _ctx: &Context,
                         stream: &mut fmt::Write,
-                        args: &Args<'f>)
+                        args: Option<&Args<'f>>)
                         -> fmt::Result {
-        if let Some(arg) = args.get(self.variable_name.as_str()) {
+        if let Some(Some(arg)) = args.map(|a| a.get(self.variable_name.as_str())) {
             try!(write!(stream, "{}", arg.value()));
             Ok(())
         } else {
@@ -47,7 +47,7 @@ mod tests {
         let fmt = SimpleFormat::new("name");
         let ctx = Context::default();
         let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, &arg("name", "John")).unwrap();
+        fmt.apply_format(&ctx, &mut output, Some(&arg("name", "John"))).unwrap();
         assert_eq!("John", output);
     }
 }

@@ -73,7 +73,7 @@
 //!
 //! let ctx = Context::default();
 //! let m = icu::parse("Connecting to {host}...").unwrap();
-//! assert_eq!(ctx.format(&m, &arg("host", "localhost")),
+//! assert_eq!(ctx.format(&m, Some(&arg("host", "localhost"))),
 //!            "Connecting to localhost...");
 //! ```
 //!
@@ -84,7 +84,7 @@
 //!
 //! let ctx = Context::default();
 //! let m = icu::parse("{name} went to {place}.").unwrap();
-//! assert_eq!(ctx.format(&m, &arg("name", "Jacob").arg("place", "the store")),
+//! assert_eq!(ctx.format(&m, Some(&arg("name", "Jacob").arg("place", "the store"))),
 //!            "Jacob went to the store.");
 //! ```
 //! ## Future Directions

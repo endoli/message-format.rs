@@ -28,7 +28,7 @@ impl Context {
     }
 
     /// Format a message, returning a string.
-    pub fn format<'f>(&self, message: &Message, args: &Args<'f>) -> String {
+    pub fn format<'f>(&self, message: &Message, args: Option<&Args<'f>>) -> String {
         let mut output = String::new();
         let _ = message.write_message(self, &mut output, args);
         output
@@ -38,7 +38,7 @@ impl Context {
     pub fn write<'f>(&self,
                      message: &Message,
                      stream: &mut fmt::Write,
-                     args: &Args<'f>)
+                     args: Option<&Args<'f>>)
                      -> fmt::Result {
         message.write_message(self, stream, args)
     }

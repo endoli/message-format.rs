@@ -115,7 +115,7 @@ mod tests {
         let ctx = Context::default();
         match parse("{name} is from {city}.") {
             Ok(m) => {
-                assert_eq!(ctx.format(&m, &arg("name", "Hendrik").arg("city", "Berlin")),
+                assert_eq!(ctx.format(&m, Some(&arg("name", "Hendrik").arg("city", "Berlin"))),
                            "Hendrik is from Berlin.");
             }
             Err(e) => panic!("Parse failed: {}", e),

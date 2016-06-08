@@ -21,7 +21,11 @@ impl PlaceholderFormat {
 }
 
 impl MessagePart for PlaceholderFormat {
-    fn apply_format(&self, ctx: &Context, stream: &mut fmt::Write, _args: &Args) -> fmt::Result {
+    fn apply_format(&self,
+                    ctx: &Context,
+                    stream: &mut fmt::Write,
+                    _args: Option<&Args>)
+                    -> fmt::Result {
         if let Some(value) = ctx.placeholder_value {
             try!(write!(stream, "{}", value));
             Ok(())
@@ -34,7 +38,7 @@ impl MessagePart for PlaceholderFormat {
 #[cfg(test)]
 mod tests {
     use super::PlaceholderFormat;
-    use {arg, Context, MessagePart};
+    use {Context, MessagePart};
 
     #[test]
     fn it_works() {
@@ -42,7 +46,7 @@ mod tests {
         let fmt = PlaceholderFormat::new();
 
         let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, &arg("count", 0)).unwrap();
+        fmt.apply_format(&ctx, &mut output, None).unwrap();
         assert_eq!("3", output);
     }
 }

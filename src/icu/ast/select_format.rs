@@ -46,9 +46,10 @@ impl MessagePart for SelectFormat {
     fn apply_format<'f>(&self,
                         ctx: &Context,
                         stream: &mut fmt::Write,
-                        args: &Args<'f>)
+                        args: Option<&Args<'f>>)
                         -> fmt::Result {
-        if let Some(&Value::Str(value)) = args.get(&self.variable_name).map(|a| a.value()) {
+        if let Some(Some(&Value::Str(value))) =
+               args.map(|a| a.get(&self.variable_name).map(|a| a.value())) {
             let message = self.lookup_message(value);
             try!(message.write_message(ctx, stream, args));
             Ok(())
@@ -71,11 +72,11 @@ mod tests {
         fmt.map("block", parse("Block").unwrap());
 
         let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, &arg("type", "block")).unwrap();
+        fmt.apply_format(&ctx, &mut output, Some(&arg("type", "block"))).unwrap();
         assert_eq!("Block", output);
 
         let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, &arg("type", "span")).unwrap();
+        fmt.apply_format(&ctx, &mut output, Some(&arg("type", "span"))).unwrap();
         assert_eq!("Default", output);
     }
 }
