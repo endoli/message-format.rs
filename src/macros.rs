@@ -10,6 +10,7 @@ macro_rules! format_message {
         $ctx.format($msg, None)
     };
     ($ctx:expr, $msg:expr, $($rest:tt)*) => ({
+        use $crate::AsValue;
         $ctx.format($msg, message_args!($($rest)*))
     });
 }
@@ -20,6 +21,7 @@ macro_rules! write_message {
         $ctx.write($msg, $stream, None)
     };
     ($ctx:expr, $msg:expr, $stream:expr, $($rest:tt)*) => ({
+        use $crate::AsValue;
         $ctx.write($msg, $stream, message_args!($($rest)*))
     });
 }
@@ -27,14 +29,14 @@ macro_rules! write_message {
 #[macro_export]
 macro_rules! message_args_aux {
     ($prev:expr, $name:ident => $value:expr) => {
-        Some(&Args {
+        Some(&$crate::Args {
             name: stringify!($name),
             value: $value.as_formattable(),
             prev: $prev,
         })
     };
     ($prev:expr, $name:ident) => {
-        Some(&Args {
+        Some(&$crate::Args {
             name: stringify!($name),
             value: $name.as_formattable(),
             prev: $prev,
@@ -42,7 +44,7 @@ macro_rules! message_args_aux {
     };
     ($prev:expr, $name:ident, $($rest:tt)*) => {
         message_args_aux!(
-            Some(&Args {
+            Some(&$crate::Args {
                 name: stringify!($name),
                 value: $name.as_formattable(),
                 prev: $prev,
@@ -51,7 +53,7 @@ macro_rules! message_args_aux {
     };
     ($prev:expr, $name:ident => $value:expr, $($rest:tt)*) => {
         message_args_aux!(
-            Some(&Args {
+            Some(&$crate::Args {
                 name: stringify!($name),
                 value: $value.as_formattable(),
                 prev: $prev,
@@ -64,14 +66,14 @@ macro_rules! message_args_aux {
 macro_rules! message_args {
     () => { None };
     ($name:ident => $value:expr) => {
-        Some(&Args {
+        Some(&$crate::Args {
             name: stringify!($name),
             value: $value.as_formattable(),
             prev: None,
         })
     };
     ($name:ident) => {
-        Some(&Args {
+        Some(&$crate::Args {
             name: stringify!($name),
             value: $name.as_formattable(),
             prev: None,
@@ -79,7 +81,7 @@ macro_rules! message_args {
     };
     ($name:ident, $($rest:tt)*) => {
         message_args_aux!(
-            Some(&Args {
+            Some(&$crate::Args {
                 name: stringify!($name),
                 value: $name.as_formattable(),
                 prev: None,
@@ -88,7 +90,7 @@ macro_rules! message_args {
     };
     ($name:ident => $value:expr, $($rest:tt)*) => {
         message_args_aux!(
-            Some(&Args {
+            Some(&$crate::Args {
                 name: stringify!($name),
                 value: $value.as_formattable(),
                 prev: None,
@@ -99,7 +101,7 @@ macro_rules! message_args {
 
 #[cfg(test)]
 mod tests {
-    use super::super::*;
+    use super::super::{Context, icu};
 
     #[test]
     fn format_without_args() {

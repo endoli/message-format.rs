@@ -69,7 +69,7 @@
 //! to [`parse`] it from a text format:
 //!
 //! ```
-//! use message_format::*;
+//! use message_format::icu;
 //!
 //! let m = icu::parse("Connecting to {host}...").unwrap();
 //! ```
@@ -94,7 +94,7 @@
 //! #[macro_use]
 //! extern crate message_format;
 //!
-//! use message_format::*;
+//! use message_format::{Context, icu};
 //!
 //! fn main() {
 //!     let ctx = Context::default();
