@@ -12,7 +12,7 @@ use super::PluralCategory;
 /// with all other numbers mapped to `PluralCategory::Other`.
 ///
 /// ```
-/// use message_format::*;
+/// use message_format::{english_cardinal_classifier, PluralCategory};
 ///
 /// assert_eq!(english_cardinal_classifier(0), PluralCategory::Other);
 /// assert_eq!(english_cardinal_classifier(1), PluralCategory::One);
