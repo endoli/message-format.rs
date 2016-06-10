@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["MessagePart","Part of a message. May be something that requires formatting a value or just plain text."]]});

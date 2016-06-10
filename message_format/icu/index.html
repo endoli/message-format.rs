@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `icu` mod in crate `message_format`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, icu">
+
+    <title>message_format::icu - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>message_format</a></p><script>window.sidebarCurrent = {name: 'icu', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>message_format</a>::<wbr><a class='mod' href=''>icu</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-6' class='srclink' href='../../src/message_format/src/icu/mod.rs.html#7-53' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>ICU Message Format Support</p>
+
+<p>This module provides support for <a href="http://userguide.icu-project.org/formatparse/messages">ICU-style message formatting</a>.
+The ICU Message Format is widely supported in many languages and
+environments.</p>
+
+<p>This library aims to support all of the ICU Message Format with the
+exception of the deprecated <code>ChoiceFormat</code>.</p>
+
+<p>The important functionality provided here is the <a href="fn.parse.html"><code>icu::parse</code></a>
+function which generates <a href="../struct.Message.html"><code>Message</code></a> from a string.</p>
+
+<h1 id='syntax' class='section-header'><a href='#syntax'>Syntax</a></h1>
+<p>In our implementation of the ICU Message Format, parameters are always
+named.</p>
+
+<h2 id='simple-messages' class='section-header'><a href='#simple-messages'>Simple Messages</a></h2>
+<p>A simple message is just a variable name and is formatted as is:</p>
+
+<pre><code class="language-text">&quot;Connecting to {host}...&quot;
+</code></pre>
+
+<p>A message may contain multiple variables:</p>
+
+<pre><code class="language-text">&quot;Connecting to {application} on {host}...&quot;
+</code></pre>
+
+<h2 id='pluralized-messages' class='section-header'><a href='#pluralized-messages'>Pluralized Messages</a></h2>
+<p>Parsing of <code>plural</code> messages is not yet supported.</p>
+
+<h2 id='select-messages' class='section-header'><a href='#select-messages'>Select Messages</a></h2>
+<p>Parsing of <code>select</code> messages is not yet supported.</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='ast/index.html'
+                                  title='message_format::icu::ast'>ast</a></td>
+                           <td class='docblock short'>
+                                <p>ICU Message Format AST Support</p>
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.parse.html'
+                                  title='message_format::icu::parse'>parse</a></td>
+                           <td class='docblock short'>
+                                <p>Parse some text and hopefully return a <a href="../struct.Message.html"><code>Message</code></a>.</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "message_format";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

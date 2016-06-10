@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Entry",""],["Expression",""],["PatternElement",""],["Value",""]],"fn":[["parse",""]],"struct":[["Comment",""],["Identifier",""]]});

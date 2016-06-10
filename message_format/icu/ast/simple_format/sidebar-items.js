@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SimpleFormat","A simple message consisting of a value to be formatted."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PlaceholderFormat","A placeholder for a value. Used by `PluralFormat`."]]});

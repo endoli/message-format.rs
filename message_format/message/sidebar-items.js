@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Message","A message that has been localized and can be formatted in a locale-aware manner."]]});

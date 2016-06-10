@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `message_format` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, message_format">
+
+    <title>message_format - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'></p><script>window.sidebarCurrent = {name: 'message_format', ty: 'mod', relpath: '../'};</script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>message_format</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-0' class='srclink' href='../src/message_format/src/lib.rs.html#7-164' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'>
+<h1 id='message-format' class='section-header'><a href='#message-format'>Message Format</a></h1>
+<p>A <a href="struct.Message.html"><code>Message</code></a> is a piece of user-visible text that typically has
+variable elements.</p>
+
+<p>Often, when writing your application, you need to customize the
+output based on various variable values:</p>
+
+<blockquote>
+<p>Your search had no results.</p>
+
+<p>Your search had one result.</p>
+
+<p>Your search had 3 results.</p>
+</blockquote>
+
+<p>You don&#39;t want to have specific code for each message output to
+build up the text, and ideally, you&#39;ll be supporting localization
+so that your application can be used by people who speak other
+languages, which often have different rules concerning pluralization,
+gender and list formatting.</p>
+
+<p>Separating messages from the code has other benefits as well apart
+from making localization easier. You may need different branding of
+your product for different builds, or you may want to be able to have
+someone edit and proofread the text without having to have them modify
+the code itself.</p>
+
+<p>This module currently provides support for messages using the
+<a href="icu/index.html">ICU Message Format</a>. In the future, we hope to support other
+message formats as well, especially L20n.</p>
+
+<h2 id='installation' class='section-header'><a href='#installation'>Installation</a></h2>
+<p>This crate works with Cargo and is on
+<a href="https://crates.io/crates/message-format">crates.io</a>.
+Add it to your <code>Cargo.toml</code> like so:</p>
+
+<pre><code class="language-toml">[dependencies]
+message-format = &quot;0.0.1&quot;
+</code></pre>
+
+<p>This library depends upon some macros being used, so at the top of your crate,
+you will want to make sure that macros from this crate are used:</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>message_format</span>;</pre>
+
+<h2 id='contexts' class='section-header'><a href='#contexts'>Contexts</a></h2>
+<p>The context stores information that is shared between all of the formats
+that are formatted using that context. (You might want to have multiple
+contexts, or you might not.)</p>
+
+<p>For now, this stores the locale that is being used, but in the future,
+it will be used for additional features.</p>
+
+<h2 id='icu-formatted-messages' class='section-header'><a href='#icu-formatted-messages'>ICU Formatted Messages</a></h2>
+<p>The simplest way to create an ICU formatted <a href="struct.Message.html"><code>Message</code></a> from code is
+to <a href="icu/fn.parse.html"><code>parse</code></a> it from a text format:</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>message_format</span>::<span class='ident'>icu</span>;
+
+<span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>icu</span>::<span class='ident'>parse</span>(<span class='string'>&quot;Connecting to {host}...&quot;</span>).<span class='ident'>unwrap</span>();</pre>
+
+<p>For details on the <a href="icu/index.html">ICU Message Format</a> syntax, see the <a href="icu/index.html"><code>icu</code> module</a>.</p>
+
+<h2 id='l20n-formatted-messages' class='section-header'><a href='#l20n-formatted-messages'>L20n Formatted Messages</a></h2>
+<p>Support for the <a href="http://l20n.org/">L20n</a> localization format is under development.</p>
+
+<h2 id='formatting-a-message' class='section-header'><a href='#formatting-a-message'>Formatting a Message</a></h2>
+<p>Messages need arguments or parameters. Since messages typically have named
+arguments, we can&#39;t just pass arguments directly like we might do with
+<code>format!</code> or other lower level formatting operations. Instead, we have
+our own macros.</p>
+
+<p>Arguments can be specified as <code>name =&gt; value</code> or, if you have a variable
+with the same name as the argument already, then as just <code>name</code>.</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>message_format</span>;
+
+<span class='kw'>use</span> <span class='ident'>message_format</span>::{<span class='ident'>Context</span>, <span class='ident'>icu</span>};
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>Context</span>::<span class='ident'>default</span>();
+    <span class='kw'>let</span> <span class='ident'>m1</span> <span class='op'>=</span> <span class='ident'>icu</span>::<span class='ident'>parse</span>(<span class='string'>&quot;Connecting to {host}...&quot;</span>).<span class='ident'>unwrap</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='macro'>format_message</span><span class='macro'>!</span>(<span class='ident'>ctx</span>, <span class='kw-2'>&amp;</span><span class='ident'>m1</span>, <span class='ident'>host</span> <span class='op'>=&gt;</span> <span class='string'>&quot;localhost&quot;</span>),
+               <span class='string'>&quot;Connecting to localhost...&quot;</span>);
+
+    <span class='kw'>let</span> <span class='ident'>m2</span> <span class='op'>=</span> <span class='ident'>icu</span>::<span class='ident'>parse</span>(<span class='string'>&quot;{name} went to {place}.&quot;</span>).<span class='ident'>unwrap</span>();
+    <span class='kw'>let</span> <span class='ident'>name</span> <span class='op'>=</span> <span class='string'>&quot;Jacob&quot;</span>;
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='macro'>format_message</span><span class='macro'>!</span>(<span class='ident'>ctx</span>, <span class='kw-2'>&amp;</span><span class='ident'>m2</span>, <span class='ident'>name</span>, <span class='ident'>place</span> <span class='op'>=&gt;</span> <span class='string'>&quot;the store&quot;</span>),
+               <span class='string'>&quot;Jacob went to the store.&quot;</span>);
+}</pre>
+
+<h2 id='future-directions' class='section-header'><a href='#future-directions'>Future Directions</a></h2>
+<p>In the future, we want to extend this library to support a number of
+additional features:</p>
+
+<ul>
+<li>Serializing and deserializing messages in a binary format to avoid
+needing to parse them on every application startup.</li>
+<li>Integration with <code>rust-locale</code> or other libraries for doing locale
+specific formatting.</li>
+<li>Extending the types of data that can be used with <a href="enum.Value.html"><code>Value</code></a>.</li>
+<li>Supporting <a href="http://l20n.org/">L20n</a> and perhaps other message format syntaxes. (This
+will probably require API changes.)</li>
+<li>Offline utilities for compiling and validating message format
+strings, converting to and from various formats like XLIFF, etc.</li>
+</ul>
+
+<h2 id='contributions' class='section-header'><a href='#contributions'>Contributions</a></h2>
+<p>Contributions are welcome.</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='icu/index.html'
+                                  title='message_format::icu'>icu</a></td>
+                           <td class='docblock short'>
+                                <p>ICU Message Format Support</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='l20n/index.html'
+                                  title='message_format::l20n'>l20n</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='macro' href='macro.format_message!.html'
+                                  title='message_format::format_message!'>format_message!</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='macro' href='macro.message_args!.html'
+                                  title='message_format::message_args!'>message_args!</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='macro' href='macro.message_args_aux!.html'
+                                  title='message_format::message_args_aux!'>message_args_aux!</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='macro' href='macro.write_message!.html'
+                                  title='message_format::write_message!'>write_message!</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Args.html'
+                                  title='message_format::Args'>Args</a></td>
+                           <td class='docblock short'>
+                                <p>Holds the arguments being used to format a <a href="struct.Message.html"><code>Message</code></a>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Context.html'
+                                  title='message_format::Context'>Context</a></td>
+                           <td class='docblock short'>
+                                <p>Contextual configuration data.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Message.html'
+                                  title='message_format::Message'>Message</a></td>
+                           <td class='docblock short'>
+                                <p>A message that has been localized and can be formatted in a
+locale-aware manner.</p>
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.PluralCategory.html'
+                                  title='message_format::PluralCategory'>PluralCategory</a></td>
+                           <td class='docblock short'>
+                                <p>The set of <a href="https://en.wikipedia.org/wiki/Grammatical_number">grammatical numbers</a> that we support.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.Value.html'
+                                  title='message_format::Value'>Value</a></td>
+                           <td class='docblock short'>
+                                <p>A wrapper around a value, used with <a href="struct.Args.html"><code>Args</code></a> so that a <a href="trait.MessagePart.html"><code>MessagePart</code></a>
+can access the original value when necessary.</p>
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.AsValue.html'
+                                  title='message_format::AsValue'>AsValue</a></td>
+                           <td class='docblock short'>
+                                <p>Convert a value to a <code>Value</code> wrapper.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.MessagePart.html'
+                                  title='message_format::MessagePart'>MessagePart</a></td>
+                           <td class='docblock short'>
+                                <p>Part of a message. May be something that requires formatting a
+value or just plain text.</p>
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.arg.html'
+                                  title='message_format::arg'>arg</a></td>
+                           <td class='docblock short'>
+                                <p>Create an argument holder.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='fn' href='fn.english_cardinal_classifier.html'
+                                  title='message_format::english_cardinal_classifier'>english_cardinal_classifier</a></td>
+                           <td class='docblock short'>
+                                <p>English cardinal plural classifier.</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "message_format";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
