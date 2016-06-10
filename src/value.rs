@@ -29,9 +29,33 @@ pub trait AsValue<'a> {
     fn as_formattable(&self) -> Value<'a>;
 }
 
+impl<'a> AsValue<'a> for i32 {
+    fn as_formattable(&self) -> Value<'a> {
+        Value::Number(*self as i64)
+    }
+}
+
+impl<'a> AsValue<'a> for u32 {
+    fn as_formattable(&self) -> Value<'a> {
+        Value::Number(*self as i64)
+    }
+}
+
 impl<'a> AsValue<'a> for i64 {
     fn as_formattable(&self) -> Value<'a> {
         Value::Number(*self)
+    }
+}
+
+impl<'a> AsValue<'a> for u64 {
+    fn as_formattable(&self) -> Value<'a> {
+        Value::Number(*self as i64)
+    }
+}
+
+impl<'a> AsValue<'a> for usize {
+    fn as_formattable(&self) -> Value<'a> {
+        Value::Number(*self as i64)
     }
 }
 
