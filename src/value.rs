@@ -15,7 +15,7 @@ use std::fmt;
 /// [`Args`]: struct.Args.html
 /// [`AsValue`]: trait.AsValue.html
 /// [`MessagePart`]: trait.MessagePart.html
-#[derive(Debug,PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Value<'a> {
     /// Wrap an `i64`.
     Number(i64),

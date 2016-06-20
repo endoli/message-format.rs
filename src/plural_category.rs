@@ -12,7 +12,7 @@
 /// [grammatical numbers]: https://en.wikipedia.org/wiki/Grammatical_number
 /// [ICU `PluralFormat`]: icu/ast/struct.PluralFormat.html
 /// [`english_cardinal_classifier`]: fn.english_cardinal_classifier.html
-#[derive(Clone,Copy,Debug,PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PluralCategory {
     /// Value is `0`.
     Zero,

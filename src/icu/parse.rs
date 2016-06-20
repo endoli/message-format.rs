@@ -14,7 +14,7 @@ use super::ast;
 use {Message, MessagePart};
 
 /// An error resulting from `parse`.
-#[derive(Clone,Debug)]
+#[derive(Clone, Debug)]
 pub enum ParseError {
     /// The message could not be parsed.
     NotImplemented,
