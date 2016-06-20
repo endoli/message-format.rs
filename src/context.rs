@@ -10,7 +10,7 @@ use std::fmt;
 use {Args, Message};
 
 /// Contextual configuration data.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Context {
     /// The language being localized for.
     pub language_tag: LanguageTag,
