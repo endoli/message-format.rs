@@ -10,10 +10,9 @@ use std::fmt;
 /// can access the original value when necessary.
 ///
 /// These are not typically created directly, but are created automatically
-/// via the [`AsValue`] trait when creating [`Args`].
+/// via the standard library's `From` trait when creating [`Args`].
 ///
 /// [`Args`]: struct.Args.html
-/// [`AsValue`]: trait.AsValue.html
 /// [`MessagePart`]: trait.MessagePart.html
 #[derive(Debug, PartialEq)]
 pub enum Value<'a> {
@@ -23,45 +22,39 @@ pub enum Value<'a> {
     Str(&'a str),
 }
 
-/// Convert a value to a `Value` wrapper.
-pub trait AsValue<'a> {
-    /// Convert a value to a `Value` wrapper.
-    fn as_formattable(&self) -> Value<'a>;
-}
-
-impl<'a> AsValue<'a> for i32 {
-    fn as_formattable(&self) -> Value<'a> {
-        Value::Number(*self as i64)
+impl<'a> From<i32> for Value<'a> {
+    fn from(value: i32) -> Value<'a> {
+        Value::Number(value as i64)
     }
 }
 
-impl<'a> AsValue<'a> for u32 {
-    fn as_formattable(&self) -> Value<'a> {
-        Value::Number(*self as i64)
+impl<'a> From<u32> for Value<'a> {
+    fn from(value: u32) -> Value<'a> {
+        Value::Number(value as i64)
     }
 }
 
-impl<'a> AsValue<'a> for i64 {
-    fn as_formattable(&self) -> Value<'a> {
-        Value::Number(*self)
+impl<'a> From<i64> for Value<'a> {
+    fn from(value: i64) -> Value<'a> {
+        Value::Number(value)
     }
 }
 
-impl<'a> AsValue<'a> for u64 {
-    fn as_formattable(&self) -> Value<'a> {
-        Value::Number(*self as i64)
+impl<'a> From<u64> for Value<'a> {
+    fn from(value: u64) -> Value<'a> {
+        Value::Number(value as i64)
     }
 }
 
-impl<'a> AsValue<'a> for usize {
-    fn as_formattable(&self) -> Value<'a> {
-        Value::Number(*self as i64)
+impl<'a> From<usize> for Value<'a> {
+    fn from(value: usize) -> Value<'a> {
+        Value::Number(value as i64)
     }
 }
 
-impl<'a> AsValue<'a> for &'a str {
-    fn as_formattable(&self) -> Value<'a> {
-        Value::Str(self)
+impl<'a> From<&'a str> for Value<'a> {
+    fn from(value: &'a str) -> Value<'a> {
+        Value::Str(value)
     }
 }
 

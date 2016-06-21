@@ -4,7 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::{AsValue, Value};
+use super::Value;
 
 /// Holds the arguments being used to format a [`Message`].
 ///
@@ -36,10 +36,12 @@ pub struct Args<'a> {
 /// let args = arg("name", "John");
 /// assert!(args.get("name").is_some());
 /// ```
-pub fn arg<'a, T: 'a + AsValue<'a>>(name: &'a str, value: T) -> Args<'a> {
+pub fn arg<'a, T: 'a>(name: &'a str, value: T) -> Args<'a>
+    where Value<'a>: From<T>
+{
     Args {
         name: name,
-        value: value.as_formattable(),
+        value: Value::from(value),
         prev: None,
     }
 }
@@ -60,12 +62,13 @@ impl<'a> Args<'a> {
     /// assert!(args.get("name").is_some());
     /// assert!(args.get("city").is_some());
     /// ```
-    pub fn arg<T: 'a + AsValue<'a>>(&'a self, name: &'a str, value: T) -> Args<'a>
-        where Self: Sized
+    pub fn arg<T: 'a>(&'a self, name: &'a str, value: T) -> Args<'a>
+        where Self: Sized,
+              Value<'a>: From<T>
     {
         Args {
             name: name,
-            value: value.as_formattable(),
+            value: Value::from(value),
             prev: Some(self),
         }
     }

@@ -187,4 +187,4 @@ pub use self::message::Message;
 pub use self::message_part::MessagePart;
 pub use self::plural_category::PluralCategory;
 pub use self::plural_classifiers::*;
-pub use self::value::{AsValue, Value};
+pub use self::value::Value;
