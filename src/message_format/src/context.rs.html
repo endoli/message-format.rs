@@ -109,7 +109,7 @@
 <span class='kw'>use</span> {<span class='ident'>Args</span>, <span class='ident'>Message</span>};
 
 <span class='doccomment'>/// Contextual configuration data.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Context</span> {
     <span class='doccomment'>/// The language being localized for.</span>
     <span class='kw'>pub</span> <span class='ident'>language_tag</span>: <span class='ident'>LanguageTag</span>,

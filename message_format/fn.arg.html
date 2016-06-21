@@ -47,8 +47,8 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-576' class='srclink' href='../src/message_format/src/args.rs.html#39-45' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn arg&lt;'a, T: 'a + <a class='trait' href='../message_format/trait.AsValue.html' title='message_format::AsValue'>AsValue</a>&lt;'a&gt;&gt;(name: &amp;'a <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, value: T) -&gt; <a class='struct' href='../message_format/struct.Args.html' title='message_format::Args'>Args</a>&lt;'a&gt;</pre><div class='docblock'><p>Create an argument holder.</p>
+               </span><a id='src-576' class='srclink' href='../src/message_format/src/args.rs.html#39-47' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn arg&lt;'a, T: 'a&gt;(name: &amp;'a <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, value: T) -&gt; <a class='struct' href='../message_format/struct.Args.html' title='message_format::Args'>Args</a>&lt;'a&gt; <span class='where'>where <a class='enum' href='../message_format/enum.Value.html' title='message_format::Value'>Value</a>&lt;'a&gt;: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;T&gt;</span></pre><div class='docblock'><p>Create an argument holder.</p>
 
 <p>This isn&#39;t commonly used as arguments are usually set up via the
 <code>format_message!</code> or <code>write_message!</code> macros.</p>
