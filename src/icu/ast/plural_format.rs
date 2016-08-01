@@ -139,4 +139,30 @@ mod tests {
         fmt.apply_format(&ctx, &mut output, Some(&arg("count", 3))).unwrap();
         assert_eq!("Other", output);
     }
+
+    #[test]
+    fn literals_work() {
+        let ctx = Context::default();
+
+        let mut fmt = PluralFormat::new("count", parse("Other").unwrap());
+        fmt.one(parse("One").unwrap());
+        fmt.literal(3, parse("Three").unwrap());
+        fmt.literal(6, parse("Six").unwrap());
+
+        let mut output = String::new();
+        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 1))).unwrap();
+        assert_eq!("One", output);
+
+        let mut output = String::new();
+        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 3))).unwrap();
+        assert_eq!("Three", output);
+
+        let mut output = String::new();
+        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 6))).unwrap();
+        assert_eq!("Six", output);
+
+        let mut output = String::new();
+        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 0))).unwrap();
+        assert_eq!("Other", output);
+    }
 }
