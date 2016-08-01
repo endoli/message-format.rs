@@ -40,14 +40,17 @@ impl MessagePart for SimpleFormat {
 #[cfg(test)]
 mod tests {
     use super::SimpleFormat;
-    use {arg, Context, MessagePart};
+    use {Context, Message};
 
     #[test]
     fn it_works() {
-        let fmt = SimpleFormat::new("name");
         let ctx = Context::default();
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("name", "John"))).unwrap();
+
+        // Manually construct a message in an ugly way so that we aren't testing parsing.
+        let fmt = SimpleFormat::new("name");
+        let msg = Message::new(vec![Box::new(fmt)]);
+
+        let output = format_message!(ctx, &msg, name => "John");
         assert_eq!("John", output);
     }
 }

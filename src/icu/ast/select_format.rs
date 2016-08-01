@@ -63,20 +63,21 @@ impl MessagePart for SelectFormat {
 mod tests {
     use icu::parse;
     use super::SelectFormat;
-    use {arg, Context, MessagePart};
+    use {Context, Message};
 
     #[test]
     fn it_works() {
         let ctx = Context::default();
+
+        // Manually construct a message in an ugly way so that we aren't testing parsing.
         let mut fmt = SelectFormat::new("type", parse("Default").unwrap());
         fmt.map("block", parse("Block").unwrap());
+        let msg = Message::new(vec![Box::new(fmt)]);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("type", "block"))).unwrap();
+        let output = format_message!(ctx, &msg, type => "block");
         assert_eq!("Block", output);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("type", "span"))).unwrap();
+        let output = format_message!(ctx, &msg, type => "span");
         assert_eq!("Default", output);
     }
 }

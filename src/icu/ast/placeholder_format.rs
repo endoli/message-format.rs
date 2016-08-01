@@ -38,15 +38,15 @@ impl MessagePart for PlaceholderFormat {
 #[cfg(test)]
 mod tests {
     use super::PlaceholderFormat;
-    use {Context, MessagePart};
+    use {Context, Message};
 
     #[test]
     fn it_works() {
         let ctx = Context { placeholder_value: Some(3), ..Context::default() };
-        let fmt = PlaceholderFormat::new();
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, None).unwrap();
+        let msg = Message::new(vec![Box::new(PlaceholderFormat::new())]);
+
+        let output = format_message!(ctx, &msg);
         assert_eq!("3", output);
     }
 }

@@ -119,24 +119,24 @@ impl MessagePart for PluralFormat {
 mod tests {
     use icu::parse;
     use super::PluralFormat;
-    use {arg, Context, MessagePart};
+    use {Context, Message};
 
     #[test]
     fn it_works() {
         let ctx = Context::default();
+
+        // Manually construct a message in an ugly way so that we aren't testing parsing.
         let mut fmt = PluralFormat::new("count", parse("Other").unwrap());
         fmt.one(parse("One").unwrap());
+        let msg = Message::new(vec![Box::new(fmt)]);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 0))).unwrap();
+        let output = format_message!(ctx, &msg, count => 0);
         assert_eq!("Other", output);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 1))).unwrap();
+        let output = format_message!(ctx, &msg, count => 1);
         assert_eq!("One", output);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 3))).unwrap();
+        let output = format_message!(ctx, &msg, count => 3);
         assert_eq!("Other", output);
     }
 
@@ -144,25 +144,23 @@ mod tests {
     fn literals_work() {
         let ctx = Context::default();
 
+        // Manually construct a message in an ugly way so that we aren't testing parsing.
         let mut fmt = PluralFormat::new("count", parse("Other").unwrap());
         fmt.one(parse("One").unwrap());
         fmt.literal(3, parse("Three").unwrap());
         fmt.literal(6, parse("Six").unwrap());
+        let msg = Message::new(vec![Box::new(fmt)]);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 1))).unwrap();
+        let output = format_message!(ctx, &msg, count => 1);
         assert_eq!("One", output);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 3))).unwrap();
+        let output = format_message!(ctx, &msg, count => 3);
         assert_eq!("Three", output);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 6))).unwrap();
+        let output = format_message!(ctx, &msg, count => 6);
         assert_eq!("Six", output);
 
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, Some(&arg("count", 0))).unwrap();
+        let output = format_message!(ctx, &msg, count => 0);
         assert_eq!("Other", output);
     }
 }

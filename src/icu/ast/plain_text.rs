@@ -37,14 +37,15 @@ impl MessagePart for PlainText {
 #[cfg(test)]
 mod tests {
     use super::PlainText;
-    use {Context, MessagePart};
+    use {Context, Message};
 
     #[test]
     fn it_works() {
-        let fmt = PlainText::new("Test text.");
         let ctx = Context::default();
-        let mut output = String::new();
-        fmt.apply_format(&ctx, &mut output, None).unwrap();
+
+        let msg = Message::new(vec![Box::new(PlainText::new("Test text."))]);
+
+        let output = format_message!(ctx, &msg);
         assert_eq!("Test text.", output);
     }
 }
