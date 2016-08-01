@@ -170,11 +170,8 @@ extern crate language_tags;
 #[macro_use]
 extern crate nom;
 
-pub mod icu;
-pub mod l20n;
 mod args;
 mod context;
-mod macros;
 mod message;
 mod message_part;
 mod plural_category;
@@ -188,3 +185,173 @@ pub use self::message_part::MessagePart;
 pub use self::plural_category::PluralCategory;
 pub use self::plural_classifiers::*;
 pub use self::value::Value;
+
+#[macro_export]
+macro_rules! format_message {
+    ($ctx:expr, $msg:expr) => {
+        $ctx.format($msg, None)
+    };
+    ($ctx:expr, $msg:expr, $($rest:tt)*) => ({
+        use $crate::Value;
+        $ctx.format($msg, message_args!($($rest)*))
+    });
+}
+
+#[macro_export]
+macro_rules! write_message {
+    ($ctx:expr, $msg:expr, $stream:expr) => {
+        $ctx.write($msg, $stream, None)
+    };
+    ($ctx:expr, $msg:expr, $stream:expr, $($rest:tt)*) => ({
+        use $crate::Value;
+        $ctx.write($msg, $stream, message_args!($($rest)*))
+    });
+}
+
+#[macro_export]
+macro_rules! message_args_aux {
+    ($prev:expr, $name:ident => $value:expr) => {
+        Some(&$crate::Args {
+            name: stringify!($name),
+            value: Value::from($value),
+            prev: $prev,
+        })
+    };
+    ($prev:expr, $name:ident) => {
+        Some(&$crate::Args {
+            name: stringify!($name),
+            value: Value::from($name),
+            prev: $prev,
+        })
+    };
+    ($prev:expr, $name:ident, $($rest:tt)*) => {
+        message_args_aux!(
+            Some(&$crate::Args {
+                name: stringify!($name),
+                value: Value::from($name),
+                prev: $prev,
+            }),
+            $($rest)*)
+    };
+    ($prev:expr, $name:ident => $value:expr, $($rest:tt)*) => {
+        message_args_aux!(
+            Some(&$crate::Args {
+                name: stringify!($name),
+                value: Value::from($value),
+                prev: $prev,
+            }),
+            $($rest)*)
+    };
+}
+
+#[macro_export]
+macro_rules! message_args {
+    () => { None };
+    ($name:ident => $value:expr) => {
+        Some(&$crate::Args {
+            name: stringify!($name),
+            value: Value::from($value),
+            prev: None,
+        })
+    };
+    ($name:ident) => {
+        Some(&$crate::Args {
+            name: stringify!($name),
+            value: Value::from($name),
+            prev: None,
+        })
+    };
+    ($name:ident, $($rest:tt)*) => {
+        message_args_aux!(
+            Some(&$crate::Args {
+                name: stringify!($name),
+                value: Value::from($name),
+                prev: None,
+            }),
+            $($rest)*)
+    };
+    ($name:ident => $value:expr, $($rest:tt)*) => {
+        message_args_aux!(
+            Some(&$crate::Args {
+                name: stringify!($name),
+                value: Value::from($value),
+                prev: None,
+            }),
+            $($rest)*)
+    };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Context, icu};
+
+    #[test]
+    fn format_without_args() {
+        let ctx = Context::default();
+
+        let m = icu::parse("Hello!").unwrap();
+        let s = format_message!(ctx, &m);
+        assert_eq!(s, "Hello!");
+    }
+
+    #[test]
+    fn format_single_arg() {
+        let ctx = Context::default();
+
+        let m = icu::parse("{name}").unwrap();
+        let name = "John";
+        let s = format_message!(ctx, &m, name);
+        assert_eq!(s, "John");
+    }
+
+    #[test]
+    fn format_single_named_arg() {
+        let ctx = Context::default();
+
+        let m = icu::parse("{name}").unwrap();
+        let s = format_message!(ctx, &m, name => "John");
+        assert_eq!(s, "John");
+    }
+
+    #[test]
+    fn format_two_args() {
+        let ctx = Context::default();
+
+        let m = icu::parse("{a}{b}").unwrap();
+        let b = "2";
+        let s = format_message!(ctx, &m, a => "1", b);
+        assert_eq!(s, "12");
+    }
+
+    #[test]
+    fn format_three_args() {
+        let ctx = Context::default();
+
+        let m = icu::parse("{a}{c}{b}").unwrap();
+        let s = format_message!(ctx, &m, a => "1", b => "2", c => "3");
+        assert_eq!(s, "132");
+    }
+
+    #[test]
+    fn write_without_args() {
+        let ctx = Context::default();
+
+        let m = icu::parse("Hello!").unwrap();
+        let mut stream = String::new();
+        write_message!(ctx, &m, &mut stream).unwrap();
+        assert_eq!(stream, "Hello!");
+    }
+
+    #[test]
+    fn write_single_arg() {
+        let ctx = Context::default();
+
+        let m = icu::parse("{name}").unwrap();
+        let mut stream = String::new();
+        write_message!(ctx, &m, &mut stream, name => "John").unwrap();
+        assert_eq!(stream, "John");
+    }
+}
+
+pub mod icu;
+pub mod l20n;
