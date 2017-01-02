@@ -4,10 +4,15 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::collections::HashMap;
 use std::fmt;
 
 use {Args, Context, MessagePart, Message, Value};
+
+#[derive(Debug)]
+struct SelectMapping {
+    value: String,
+    message: Message,
+}
 
 /// Using a value, select the appropriate message and format it.
 #[derive(Debug)]
@@ -15,7 +20,7 @@ pub struct SelectFormat {
     /// The name of the variable whose value should be formatted.
     variable_name: String,
     /// Given a value of a variable, this maps that to a message format.
-    mappings: HashMap<String, Message>,
+    mappings: Vec<SelectMapping>,
     /// The message format to use if no valid mapping is found for
     /// the variable value.
     default: Message,
@@ -26,19 +31,25 @@ impl SelectFormat {
     pub fn new(variable_name: &str, default: Message) -> Self {
         SelectFormat {
             variable_name: variable_name.to_string(),
-            mappings: HashMap::<String, Message>::new(),
+            mappings: vec![],
             default: default,
         }
     }
 
     /// Map a value for a particular message.
     pub fn map(&mut self, value: &str, message: Message) {
-        self.mappings.insert(value.to_string(), message);
+        self.mappings.push(SelectMapping {
+            value: value.to_string(),
+            message: message,
+        });
     }
 
     /// Given a value, determine which `Message` to use.
     pub fn lookup_message(&self, value: &str) -> &Message {
-        self.mappings.get(value).unwrap_or(&self.default)
+        self.mappings
+            .iter()
+            .find(|ref mapping| mapping.value == value)
+            .map_or(&self.default, |ref mapping| &mapping.message)
     }
 }
 

@@ -4,11 +4,16 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::collections::HashMap;
 use std::fmt;
 
 use english_cardinal_classifier;
 use {Args, Context, Message, MessagePart, PluralCategory, Value};
+
+#[derive(Debug)]
+struct PluralMapping {
+    value: i64,
+    message: Message,
+}
 
 /// Format a value taking pluralization rules into account.
 #[derive(Debug)]
@@ -16,7 +21,7 @@ pub struct PluralFormat {
     /// The name of the variable whose value should be formatted.
     variable_name: String,
     classifier: fn(i64) -> PluralCategory,
-    literals: HashMap<i64, Message>,
+    literals: Vec<PluralMapping>,
     offset: i64,
     zero: Option<Message>,
     one: Option<Message>,
@@ -32,7 +37,7 @@ impl PluralFormat {
         PluralFormat {
             variable_name: variable_name.to_string(),
             classifier: english_cardinal_classifier,
-            literals: HashMap::new(),
+            literals: vec![],
             offset: 0,
             zero: None,
             one: None,
@@ -45,7 +50,10 @@ impl PluralFormat {
 
     /// Set the `message` to be used for a literal value.
     pub fn literal(&mut self, literal: i64, message: Message) {
-        self.literals.insert(literal, message);
+        self.literals.push(PluralMapping {
+            value: literal,
+            message: message,
+        });
     }
 
     /// Apply an `offset`.
@@ -80,8 +88,11 @@ impl PluralFormat {
 
     /// Given a value adjusted by the `offset`, determine which `Message` to use.
     fn lookup_message(&self, offset_value: i64) -> &Message {
-        if let Some(literal) = self.literals.get(&offset_value) {
-            literal
+        if let Some(literal_message) = self.literals
+            .iter()
+            .find(|ref mapping| mapping.value == offset_value)
+            .map(|ref mapping| &mapping.message) {
+            literal_message
         } else {
             let category = (self.classifier)(offset_value);
             match category {
