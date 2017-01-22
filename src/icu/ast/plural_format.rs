@@ -90,8 +90,8 @@ impl PluralFormat {
     fn lookup_message(&self, offset_value: i64) -> &Message {
         if let Some(literal_message) = self.literals
             .iter()
-            .find(|ref mapping| mapping.value == offset_value)
-            .map(|ref mapping| &mapping.message) {
+            .find(|mapping| mapping.value == offset_value)
+            .map(|mapping| &mapping.message) {
             literal_message
         } else {
             let category = (self.classifier)(offset_value);

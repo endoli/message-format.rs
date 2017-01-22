@@ -48,8 +48,8 @@ impl SelectFormat {
     pub fn lookup_message(&self, value: &str) -> &Message {
         self.mappings
             .iter()
-            .find(|ref mapping| mapping.value == value)
-            .map_or(&self.default, |ref mapping| &mapping.message)
+            .find(|mapping| mapping.value == value)
+            .map_or(&self.default, |mapping| &mapping.message)
     }
 }
 
