@@ -9,14 +9,14 @@ use std::fmt;
 use {Args, Context, MessagePart};
 
 /// A placeholder for a value. Used by `PluralFormat`.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct PlaceholderFormat {
 }
 
 impl PlaceholderFormat {
     /// Construct a `PlaceholderFormat`.
     pub fn new() -> Self {
-        PlaceholderFormat {}
+        PlaceholderFormat::default()
     }
 }
 
