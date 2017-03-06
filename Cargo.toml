@@ -12,4 +12,4 @@ documentation = "https://endoli.github.io/message-format.rs/"
 
 [dependencies]
 language-tags = "0.2.2"
-nom = "2.0.1"
+nom = "2.1.0"
