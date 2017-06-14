@@ -117,10 +117,10 @@ impl<'a> Parser<'a> {
         match self.get_pattern() {
             Ok(value) => {
                 Ok(Entry::Entity {
-                    id: id,
-                    comment: comment,
-                    value: value,
-                })
+                       id: id,
+                       comment: comment,
+                       value: value,
+                   })
             }
             Err(err) => Err(err),
         }
@@ -219,9 +219,9 @@ impl<'a> Parser<'a> {
         content.push(PatternElement::TextElement { value: source.clone() });
 
         Ok(Value::Pattern {
-            source: source,
-            elements: content,
-        })
+               source: source,
+               elements: content,
+           })
     }
 }
 

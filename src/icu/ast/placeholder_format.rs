@@ -10,8 +10,7 @@ use {Args, Context, MessagePart};
 
 /// A placeholder for a value. Used by `PluralFormat`.
 #[derive(Debug, Default)]
-pub struct PlaceholderFormat {
-}
+pub struct PlaceholderFormat {}
 
 impl PlaceholderFormat {
     /// Construct a `PlaceholderFormat`.

@@ -8,19 +8,13 @@
 
 #[derive(Debug)]
 pub enum Expression {
-    IdentifierExpression {
-        name: String,
-    },
+    IdentifierExpression { name: String },
 }
 
 #[derive(Debug)]
 pub enum PatternElement {
-    TextElement {
-        value: String,
-    },
-    Placeable {
-        expressions: Vec<Expression>,
-    },
+    TextElement { value: String },
+    Placeable { expressions: Vec<Expression> },
 }
 
 #[derive(Debug)]

@@ -51,9 +51,9 @@ impl PluralFormat {
     /// Set the `message` to be used for a literal value.
     pub fn literal(&mut self, literal: i64, message: Message) {
         self.literals.push(PluralMapping {
-            value: literal,
-            message: message,
-        });
+                               value: literal,
+                               message: message,
+                           });
     }
 
     /// Apply an `offset`.
@@ -88,10 +88,11 @@ impl PluralFormat {
 
     /// Given a value adjusted by the `offset`, determine which `Message` to use.
     fn lookup_message(&self, offset_value: i64) -> &Message {
-        if let Some(literal_message) = self.literals
-            .iter()
-            .find(|mapping| mapping.value == offset_value)
-            .map(|mapping| &mapping.message) {
+        if let Some(literal_message) =
+            self.literals
+                .iter()
+                .find(|mapping| mapping.value == offset_value)
+                .map(|mapping| &mapping.message) {
             literal_message
         } else {
             let category = (self.classifier)(offset_value);

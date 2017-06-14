@@ -39,9 +39,9 @@ impl SelectFormat {
     /// Map a value for a particular message.
     pub fn map(&mut self, value: &str, message: Message) {
         self.mappings.push(SelectMapping {
-            value: value.to_string(),
-            message: message,
-        });
+                               value: value.to_string(),
+                               message: message,
+                           });
     }
 
     /// Given a value, determine which `Message` to use.
