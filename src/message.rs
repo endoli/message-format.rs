@@ -37,7 +37,7 @@ impl Message {
                              args: Option<&Args<'f>>)
                              -> fmt::Result {
         for part in &self.parts {
-            try!(part.apply_format(&ctx, stream, args));
+            try!(part.apply_format(ctx, stream, args));
         }
         Ok(())
     }
