@@ -58,21 +58,21 @@ named!(simple_format <&str, Box<MessagePart> >,
 named!(plural_format <&str, Box<MessagePart> >,
     delimited!(
         tag_s!("{"),
-        chain!(
-            name: variable_name ~
-            tag_s!(",") ~ opt!(multispace) ~
-            tag_s!("plural") ~ opt!(multispace),
-            || Box::new(ast::SimpleFormat::new(name))),
+        do_parse!(
+            name: variable_name >>
+            tag_s!(",") >> opt!(multispace) >>
+            tag_s!("plural") >> opt!(multispace) >>
+            (Box::new(ast::SimpleFormat::new(name)))),
         tag_s!("}")));
 
 named!(select_format <&str, Box<MessagePart> >,
     delimited!(
         tag_s!("{"),
-        chain!(
-            name: variable_name ~
-            tag_s!(",") ~ opt!(multispace) ~
-            tag_s!("select") ~ opt!(multispace),
-            || Box::new(ast::SimpleFormat::new(name))),
+        do_parse!(
+            name: variable_name >>
+            tag_s!(",") >> opt!(multispace) >>
+            tag_s!("select") >> opt!(multispace) >>
+            (Box::new(ast::SimpleFormat::new(name)))),
         tag_s!("}")));
 
 /// Plain text extends up through to the start of the next format
