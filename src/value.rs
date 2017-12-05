@@ -24,13 +24,13 @@ pub enum Value<'a> {
 
 impl<'a> From<i32> for Value<'a> {
     fn from(value: i32) -> Value<'a> {
-        Value::Number(value as i64)
+        Value::Number(i64::from(value))
     }
 }
 
 impl<'a> From<u32> for Value<'a> {
     fn from(value: u32) -> Value<'a> {
-        Value::Number(value as i64)
+        Value::Number(i64::from(value))
     }
 }
 
