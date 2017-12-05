@@ -37,7 +37,8 @@ pub struct Args<'a> {
 /// assert!(args.get("name").is_some());
 /// ```
 pub fn arg<'a, T: 'a>(name: &'a str, value: T) -> Args<'a>
-    where Value<'a>: From<T>
+where
+    Value<'a>: From<T>,
 {
     Args {
         name: name,
@@ -63,8 +64,9 @@ impl<'a> Args<'a> {
     /// assert!(args.get("city").is_some());
     /// ```
     pub fn arg<T: 'a>(&'a self, name: &'a str, value: T) -> Args<'a>
-        where Self: Sized,
-              Value<'a>: From<T>
+    where
+        Self: Sized,
+        Value<'a>: From<T>,
     {
         Args {
             name: name,

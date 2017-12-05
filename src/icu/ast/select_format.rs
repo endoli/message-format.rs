@@ -39,9 +39,9 @@ impl SelectFormat {
     /// Map a value for a particular message.
     pub fn map(&mut self, value: &str, message: Message) {
         self.mappings.push(SelectMapping {
-                               value: value.to_string(),
-                               message: message,
-                           });
+            value: value.to_string(),
+            message: message,
+        });
     }
 
     /// Given a value, determine which `Message` to use.
@@ -54,11 +54,12 @@ impl SelectFormat {
 }
 
 impl MessagePart for SelectFormat {
-    fn apply_format<'f>(&self,
-                        ctx: &Context,
-                        stream: &mut fmt::Write,
-                        args: Option<&Args<'f>>)
-                        -> fmt::Result {
+    fn apply_format<'f>(
+        &self,
+        ctx: &Context,
+        stream: &mut fmt::Write,
+        args: Option<&Args<'f>>,
+    ) -> fmt::Result {
         let arg = args.and_then(|args| args.get(&self.variable_name));
         if let Some(&Value::Str(value)) = arg.map(|a| a.value()) {
             let message = self.lookup_message(value);

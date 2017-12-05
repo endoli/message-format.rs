@@ -24,11 +24,12 @@ impl PlainText {
 }
 
 impl MessagePart for PlainText {
-    fn apply_format(&self,
-                    _ctx: &Context,
-                    stream: &mut fmt::Write,
-                    _args: Option<&Args>)
-                    -> fmt::Result {
+    fn apply_format(
+        &self,
+        _ctx: &Context,
+        stream: &mut fmt::Write,
+        _args: Option<&Args>,
+    ) -> fmt::Result {
         try!(stream.write_str(self.text.as_str()));
         Ok(())
     }

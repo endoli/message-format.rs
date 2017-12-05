@@ -35,11 +35,12 @@ impl Context {
     }
 
     /// Write a message to a stream.
-    pub fn write<'f>(&self,
-                     message: &Message,
-                     stream: &mut fmt::Write,
-                     args: Option<&Args<'f>>)
-                     -> fmt::Result {
+    pub fn write<'f>(
+        &self,
+        message: &Message,
+        stream: &mut fmt::Write,
+        args: Option<&Args<'f>>,
+    ) -> fmt::Result {
         message.write_message(self, stream, args)
     }
 }

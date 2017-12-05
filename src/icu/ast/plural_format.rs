@@ -51,9 +51,9 @@ impl PluralFormat {
     /// Set the `message` to be used for a literal value.
     pub fn literal(&mut self, literal: i64, message: Message) {
         self.literals.push(PluralMapping {
-                               value: literal,
-                               message: message,
-                           });
+            value: literal,
+            message: message,
+        });
     }
 
     /// Apply an `offset`.
@@ -92,7 +92,8 @@ impl PluralFormat {
             self.literals
                 .iter()
                 .find(|mapping| mapping.value == offset_value)
-                .map(|mapping| &mapping.message) {
+                .map(|mapping| &mapping.message)
+        {
             literal_message
         } else {
             let category = (self.classifier)(offset_value);
@@ -109,16 +110,20 @@ impl PluralFormat {
 }
 
 impl MessagePart for PluralFormat {
-    fn apply_format<'f>(&self,
-                        ctx: &Context,
-                        stream: &mut fmt::Write,
-                        args: Option<&Args<'f>>)
-                        -> fmt::Result {
+    fn apply_format<'f>(
+        &self,
+        ctx: &Context,
+        stream: &mut fmt::Write,
+        args: Option<&Args<'f>>,
+    ) -> fmt::Result {
         let arg = args.and_then(|args| args.get(&self.variable_name));
         if let Some(&Value::Number(value)) = arg.map(|a| a.value()) {
             let offset_value = value - self.offset;
             let message = self.lookup_message(offset_value);
-            let ctx = Context { placeholder_value: Some(offset_value), ..ctx.clone() };
+            let ctx = Context {
+                placeholder_value: Some(offset_value),
+                ..ctx.clone()
+            };
             try!(message.write_message(&ctx, stream, args));
             Ok(())
         } else {

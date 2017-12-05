@@ -117,10 +117,10 @@ impl<'a> Parser<'a> {
         match self.get_pattern() {
             Ok(value) => {
                 Ok(Entry::Entity {
-                       id: id,
-                       comment: comment,
-                       value: value,
-                   })
+                    id: id,
+                    comment: comment,
+                    value: value,
+                })
             }
             Err(err) => Err(err),
         }
@@ -175,8 +175,10 @@ impl<'a> Parser<'a> {
                         break;
                     }
                     if first_line && !buffer.is_empty() {
-                        return Err(ParseError::new("Multiline string should have the ID line \
-                                                    empty"));
+                        return Err(ParseError::new(
+                            "Multiline string should have the ID line \
+                                                    empty",
+                        ));
                     }
                     first_line = false;
                     self.bump();
@@ -219,9 +221,9 @@ impl<'a> Parser<'a> {
         content.push(PatternElement::TextElement { value: source.clone() });
 
         Ok(Value::Pattern {
-               source: source,
-               elements: content,
-           })
+            source: source,
+            elements: content,
+        })
     }
 }
 
@@ -248,10 +250,12 @@ mod tests {
         expected_parse("simple", "a = b");
         expected_parse("simple", "a=b");
         expected_parse("simple", "a   =     b");
-        expected_parse("multiline",
-                       "multi =\n\
+        expected_parse(
+            "multiline",
+            "multi =\n\
                         | abc\n\
-                       ");
+                       ",
+        );
         expected_failure("comment", "#comment");
         expected_failure("comment", "# comment");
         expected_failure("comment", "#  comment");

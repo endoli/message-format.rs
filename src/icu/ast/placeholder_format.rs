@@ -20,11 +20,12 @@ impl PlaceholderFormat {
 }
 
 impl MessagePart for PlaceholderFormat {
-    fn apply_format(&self,
-                    ctx: &Context,
-                    stream: &mut fmt::Write,
-                    _args: Option<&Args>)
-                    -> fmt::Result {
+    fn apply_format(
+        &self,
+        ctx: &Context,
+        stream: &mut fmt::Write,
+        _args: Option<&Args>,
+    ) -> fmt::Result {
         if let Some(value) = ctx.placeholder_value {
             try!(write!(stream, "{}", value));
             Ok(())
@@ -41,7 +42,10 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let ctx = Context { placeholder_value: Some(3), ..Context::default() };
+        let ctx = Context {
+            placeholder_value: Some(3),
+            ..Context::default()
+        };
 
         let msg = Message::new(vec![Box::new(PlaceholderFormat::new())]);
 
