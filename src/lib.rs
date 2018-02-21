@@ -59,7 +59,7 @@
 //! the code itself.
 //!
 //! This module currently provides support for messages using the
-//! [ICU Message Format]. In the future, we will support the [L20n]
+//! [ICU Message Format]. In the future, we will support the [Fluent]
 //! message format as well.
 //!
 //! ## Installation
@@ -104,9 +104,9 @@
 //!
 //! For details on the [ICU Message Format] syntax, see the [`icu` module].
 //!
-//! ## L20n Formatted Messages
+//! ## Fluent Formatted Messages
 //!
-//! Support for the [L20n] localization format is under development.
+//! Support for the [Fluent] localization format is under development.
 //!
 //! ## Formatting a Message
 //!
@@ -145,7 +145,7 @@
 //! * Integration with `rust-locale` or other libraries for doing locale
 //!   specific formatting.
 //! * Extending the types of data that can be used with [`Value`].
-//! * Supporting [L20n] and perhaps other message format syntaxes. (This
+//! * Supporting [Fluent] and perhaps other message format syntaxes. (This
 //!   will probably require API changes.)
 //! * Offline utilities for compiling and validating message format
 //!   strings, converting to and from various formats like XLIFF, etc.
@@ -156,7 +156,7 @@
 //!
 //! [ICU Message Format]: icu/index.html
 //! [`icu` module]: icu/index.html
-//! [L20n]: http://l20n.org/
+//! [Fluent]: http://projectfluent.org/
 //! [`parse`]: icu/fn.parse.html
 //! [`Message`]: struct.Message.html
 //! [`Value`]: enum.Value.html
@@ -352,5 +352,5 @@ mod tests {
     }
 }
 
+pub mod fluent;
 pub mod icu;
-pub mod l20n;
