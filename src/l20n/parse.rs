@@ -23,7 +23,9 @@ pub struct ParseError {
 
 impl ParseError {
     pub fn new(error_message: &str) -> Self {
-        ParseError { error_message: String::from(error_message) }
+        ParseError {
+            error_message: String::from(error_message),
+        }
     }
 }
 
@@ -38,7 +40,6 @@ impl fmt::Display for ParseError {
         self.description().fmt(f)
     }
 }
-
 
 struct Parser<'a> {
     source: str::Chars<'a>,
@@ -115,13 +116,11 @@ impl<'a> Parser<'a> {
         self.get_line_ws();
 
         match self.get_pattern() {
-            Ok(value) => {
-                Ok(Entry::Entity {
-                    id: id,
-                    comment: comment,
-                    value: value,
-                })
-            }
+            Ok(value) => Ok(Entry::Entity {
+                id: id,
+                comment: comment,
+                value: value,
+            }),
             Err(err) => Err(err),
         }
     }
@@ -177,7 +176,7 @@ impl<'a> Parser<'a> {
                     if first_line && !buffer.is_empty() {
                         return Err(ParseError::new(
                             "Multiline string should have the ID line \
-                                                    empty",
+                             empty",
                         ));
                     }
                     first_line = false;
@@ -211,14 +210,18 @@ impl<'a> Parser<'a> {
 
         if !buffer.is_empty() {
             // source.append(buffer);
-            content.push(PatternElement::TextElement { value: source.clone() });
+            content.push(PatternElement::TextElement {
+                value: source.clone(),
+            });
         }
 
         if content.is_empty() {
             // return Value::Pattern(source: source, elements: content);
         }
 
-        content.push(PatternElement::TextElement { value: source.clone() });
+        content.push(PatternElement::TextElement {
+            value: source.clone(),
+        });
 
         Ok(Value::Pattern {
             source: source,
@@ -253,8 +256,8 @@ mod tests {
         expected_parse(
             "multiline",
             "multi =\n\
-                        | abc\n\
-                       ",
+             | abc\n\
+             ",
         );
         expected_failure("comment", "#comment");
         expected_failure("comment", "# comment");

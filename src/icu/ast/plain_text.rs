@@ -19,7 +19,9 @@ pub struct PlainText {
 impl PlainText {
     /// Construct a `PlainText`.
     pub fn new(text: &str) -> Self {
-        PlainText { text: text.to_string() }
+        PlainText {
+            text: text.to_string(),
+        }
     }
 }
 

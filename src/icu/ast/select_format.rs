@@ -6,7 +6,7 @@
 
 use std::fmt;
 
-use {Args, Context, MessagePart, Message, Value};
+use {Args, Context, Message, MessagePart, Value};
 
 #[derive(Debug)]
 struct SelectMapping {

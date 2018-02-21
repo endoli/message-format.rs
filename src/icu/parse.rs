@@ -8,7 +8,7 @@ use std::error::Error;
 use std::fmt;
 use std::str;
 
-use nom::{IResult, multispace};
+use nom::{multispace, IResult};
 
 use super::ast;
 use {Message, MessagePart};
@@ -98,8 +98,7 @@ named!(pub message_parser <&str, Message>,
 /// [`Message`]: ../struct.Message.html
 pub fn parse(message: &str) -> Result<Message, ParseError> {
     match message_parser(message) {
-        IResult::Error(_) |
-        IResult::Incomplete(_) => Err(ParseError::NotImplemented),
+        IResult::Error(_) | IResult::Incomplete(_) => Err(ParseError::NotImplemented),
         IResult::Done(_, m) => Ok(m),
     }
 }
@@ -115,8 +114,10 @@ mod tests {
         let ctx = Context::default();
         match parse("{name} is from {city}.") {
             Ok(m) => {
-                assert_eq!(ctx.format(&m, Some(&arg("name", "Hendrik").arg("city", "Berlin"))),
-                           "Hendrik is from Berlin.");
+                assert_eq!(
+                    ctx.format(&m, Some(&arg("name", "Hendrik").arg("city", "Berlin"))),
+                    "Hendrik is from Berlin."
+                );
             }
             Err(e) => panic!("Parse failed: {}", e),
         }

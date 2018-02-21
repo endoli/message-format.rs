@@ -18,7 +18,9 @@ pub struct SimpleFormat {
 impl SimpleFormat {
     /// Construct a `SimpleFormat`.
     pub fn new(variable_name: &str) -> Self {
-        SimpleFormat { variable_name: variable_name.to_string() }
+        SimpleFormat {
+            variable_name: variable_name.to_string(),
+        }
     }
 }
 
